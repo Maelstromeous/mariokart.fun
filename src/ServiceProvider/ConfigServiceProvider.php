@@ -19,7 +19,8 @@ class ConfigServiceProvider extends AbstractServiceProvider
         $this->getContainer()->share('config', function () {
             return [
                 'environment' => $_ENV['ENVIRONMENT'],
-                'base_url'    => $_ENV['BASE_URL']
+                'base_url'    => $_ENV['BASE_URL'],
+                'version'     => $_ENV['VERSION']
             ];
         });
     }

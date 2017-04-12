@@ -23,10 +23,13 @@ class TemplateServiceProvider extends AbstractServiceProvider
     public function register()
     {
         $config = $this->getContainer()->get('config');
+        $version = $config['environment'] === 'production' ? $config ['version'] : date('U');
+
         $globals = [
             'base_url'    => $config['base_url'],
             'asset_url'   => $config['base_url'] . '/assets',
-            'environment' => $config['environment']
+            'environment' => $config['environment'],
+            'version'     => "?v={$version}"
         ];
 
         $this->getContainer()->share('Twig_Environment', function () use ($globals, $config) {

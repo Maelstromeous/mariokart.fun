@@ -13,6 +13,11 @@ services:
         environment:
             - VIRTUAL_HOST=www.mariokart.fun,mariokart.fun,dev.mariokart.fun
         restart: always
+    composer:
+        image: composer/composer
+        volumes:
+            - .:/app
+        command: install
     php:
         container_name: mariokartfun-php
         build:

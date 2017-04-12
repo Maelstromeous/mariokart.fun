@@ -3,3 +3,4 @@ public/assets/css/compiled/
 node_modules/
 public/bower_components/
 public/assets/compiled/
+.env

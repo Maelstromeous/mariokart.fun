@@ -2,6 +2,7 @@ version: '3'
 services:
     nginx:
         image: nginx:1.11
+        container_name: mariokartfun-nginx
         ports:
             - "80"
         links:
@@ -13,6 +14,7 @@ services:
             - VIRTUAL_HOST=www.mariokart.fun,mariokart.fun,dev.mariokart.fun
         restart: always
     php:
+        container_name: mariokartfun-php
         build:
             context: .
             dockerfile: ./docker/Dockerfile-php

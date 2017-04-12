@@ -29,7 +29,7 @@ class HttpMessageServiceProvider extends AbstractServiceProvider
             $config = $this->getContainer()->get('config');
 
             if ($config['environment'] === 'development') {
-                $_SERVER['REQUEST_URI'] = str_replace('/app-template/public', '', $_SERVER['REQUEST_URI']);
+                $_SERVER['REQUEST_URI'] = str_replace('/', '', $_SERVER['REQUEST_URI']);
             }
 
             return ServerRequestFactory::fromGlobals();

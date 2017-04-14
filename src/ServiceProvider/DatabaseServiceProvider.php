@@ -26,7 +26,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             $pdo = new ExtendedPdo(
                 "mysql:host={$config['host']};dbname={$config['name']}",
                 $config['user'],
-                $config['password']
+                $config['pass']
             );
 
             return $pdo;

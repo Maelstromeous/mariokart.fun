@@ -24,9 +24,13 @@ class MainController implements DatabaseAwareInterface, TemplateAwareInterface
      */
     public function index(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $standings = $this->calculateStandings();
         $response->getBody()->write(
-            $this->getTemplateDriver()->render('landing.html')
+            $this->getTemplateDriver()->render(
+                'landing.html',
+                [
+                    'standings' => $this->getStandings()
+                ]
+            )
         );
     }
 
@@ -35,13 +39,39 @@ class MainController implements DatabaseAwareInterface, TemplateAwareInterface
      *
      * @return array
      */
-    private function calculateStandings()
+    private function getStandings()
     {
         $standings = [];
 
         $pdo = $this->getDatabaseDriver();
         $query = $this->newSelectQuery();
 
-        var_dump($query);die;
+        $date = new \DateTime();
+        $dateFrom = $date->format('Y-m-01 00:00:00');
+        $dateTo = $date->format('Y-m-t 23:59:59');
+
+        $sql = "SELECT
+                	p.name AS `player`,
+                    p.defaultchar,
+                    COUNT(DISTINCT(rp.race)) AS races,
+                    SUM(CASE WHEN rp.position = 1 THEN '1' ELSE '0' END) AS stage_wins,
+                    ANY_VALUE(ch.wins) AS `champ_wins`
+                FROM championships AS c
+                INNER JOIN races AS r ON c.id = r.championship
+                INNER JOIN races_positions AS rp ON r.id = rp.race
+                INNER JOIN players AS p ON rp.player = p.id
+                LEFT JOIN
+                (
+                	SELECT
+                		COUNT(DISTINCT(id)) AS `wins`,
+                        champion
+                	FROM championships
+                    GROUP BY id
+                ) AS ch ON ch.champion = p.id
+                WHERE valid = 1
+                AND `date` BETWEEN '{$dateFrom}' AND '{$dateTo}'
+                GROUP BY p.name, p.defaultchar";
+
+        return $pdo->query($sql, $pdo::FETCH_OBJ)->fetchAll();
     }
 }

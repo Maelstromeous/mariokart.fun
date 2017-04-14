@@ -2,17 +2,20 @@
 
 namespace Maelstromeous\Mariokart\Controller;
 
+use Maelstromeous\Mariokart\Contract\DatabaseAwareInterface;
+use Maelstromeous\Mariokart\Contract\DatabaseAwareTrait;
 use Maelstromeous\Mariokart\Contract\TemplateAwareInterface;
 use Maelstromeous\Mariokart\Contract\TemplateAwareTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class MainController implements TemplateAwareInterface
+class MainController implements DatabaseAwareInterface, TemplateAwareInterface
 {
+    use DatabaseAwareTrait;
     use TemplateAwareTrait;
 
     /**
-     * Hello world!
+     * Landing
      *
      * @param  Psr\Http\Message\ServerRequestInterface $request
      * @param  Psr\Http\Message\ResponseInterface      $response
@@ -21,23 +24,24 @@ class MainController implements TemplateAwareInterface
      */
     public function index(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $standings = $this->calculateStandings();
         $response->getBody()->write(
             $this->getTemplateDriver()->render('landing.html')
         );
     }
 
     /**
-     * Route that ensures .htaccess and overall routing is working
+     * Calculates the standings required to show on the landing page
      *
-     * @param  Psr\Http\Message\ServerRequestInterface $request
-     * @param  Psr\Http\Message\ResponseInterface      $response
-     *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return array
      */
-    public function testRoute(ServerRequestInterface $request, ResponseInterface $response)
+    private function calculateStandings()
     {
-        $response->getBody()->write(
-            'It\'s working!'
-        );
+        $standings = [];
+
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+
+        var_dump($query);die;
     }
 }

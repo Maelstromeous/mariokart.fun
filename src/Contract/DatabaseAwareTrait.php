@@ -3,6 +3,7 @@
 namespace Maelstromeous\Mariokart\Contract;
 
 use Aura\Sql\ExtendedPdo as DBDriver;
+use Aura\SqlQuery\QueryFactory;
 
 trait DatabaseAwareTrait
 {
@@ -42,42 +43,52 @@ trait DatabaseAwareTrait
     }
 
     /**
-     * Set the Database Data driver
+     * Gets a new instance of the query factory
      *
-     * @param \Aura\Sql\ExtendedPdo $db
+     * @return \Aura\SqlQuery\QueryFactory
      */
-    public function setDatabaseDataDriver(DBDriver $db)
+    public function getQueryFactory()
     {
-        $this->dbData = $db;
+        return new QueryFactory('mysql');
     }
 
     /**
-     * Get the Database Data driver
+     * Gets a new select query builder instance
      *
-     * @return \Aura\Sql\ExtendedPdo
+     * @return \Aura\SqlQuery\Mysql\Select
      */
-    public function getDatabaseDataDriver()
+    public function newSelectQuery()
     {
-        return $this->dbData;
+        return $this->getQueryFactory()->newSelect();
     }
 
     /**
-     * Set the Database Data driver
+     * Gets a new select query builder instance
      *
-     * @param \Aura\Sql\ExtendedPdo $db
+     * @return \Aura\SqlQuery\Mysql\Insert
      */
-    public function setDatabaseArchiveDriver(DBDriver $db)
+    public function newInsertQuery()
     {
-        $this->dbArchive = $db;
+        return $this->getQueryFactory()->newInsert();
     }
 
     /**
-     * Get the Database Data driver
+     * Gets a new update query builder instance
      *
-     * @return \Aura\Sql\ExtendedPdo
+     * @return \Aura\SqlQuery\Mysql\Update
      */
-    public function getDatabaseArchiveDriver()
+    public function newUpdateQuery()
     {
-        return $this->dbArchive;
+        return $this->getQueryFactory()->newUpdate();
+    }
+
+    /**
+     * Gets a new delete query builder instance
+     *
+     * @return \Aura\SqlQuery\Mysql\Update
+     */
+    public function newDeleteQuery()
+    {
+        return $this->getQueryFactory()->newDelete();
     }
 }

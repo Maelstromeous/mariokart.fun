@@ -3,18 +3,15 @@
 namespace Maelstromeous\Mariokart\ServiceProvider;
 
 use Aura\Sql\ExtendedPdo;
-use Aura\SqlQuery\QueryFactory;
-use League\Container\ServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 
-class DatabaseServiceProvider extends ServiceProvider
+class DatabaseServiceProvider extends AbstractServiceProvider
 {
     /**
      * @var array
      */
     protected $provides = [
         'Database',
-        'Database\Data',
-        'Database\Archive',
         'Aura\SqlQuery\QueryFactory'
     ];
 
@@ -23,44 +20,16 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->singleton('Database', function () {
+        $this->getContainer()->share('Database', function () {
             $config = $this->getContainer()->get('config')['database'];
 
             $pdo = new ExtendedPdo(
-                "mysql:host={$config['host']};dbname={$config['schema']}",
+                "mysql:host={$config['host']};dbname={$config['name']}",
                 $config['user'],
                 $config['password']
             );
 
             return $pdo;
-        });
-
-        $this->getContainer()->singleton('Database\Data', function () {
-            $config = $this->getContainer()->get('config')['database_data'];
-
-            $pdo = new ExtendedPdo(
-                "mysql:host={$config['host']};dbname={$config['schema']}",
-                $config['user'],
-                $config['password']
-            );
-
-            return $pdo;
-        });
-
-        $this->getContainer()->singleton('Database\Archive', function () {
-            $config = $this->getContainer()->get('config')['database_archive'];
-
-            $pdo = new ExtendedPdo(
-                "mysql:host={$config['host']};dbname={$config['schema']}",
-                $config['user'],
-                $config['password']
-            );
-
-            return $pdo;
-        });
-
-        $this->getContainer()->add('Aura\SqlQuery\QueryFactory', function () {
-            return new QueryFactory('mysql');
         });
     }
 }

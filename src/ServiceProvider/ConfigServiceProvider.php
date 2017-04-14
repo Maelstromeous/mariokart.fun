@@ -20,7 +20,13 @@ class ConfigServiceProvider extends AbstractServiceProvider
             return [
                 'environment' => $_ENV['ENVIRONMENT'],
                 'base_url'    => $_ENV['BASE_URL'],
-                'version'     => $_ENV['VERSION']
+                'version'     => $_ENV['VERSION'],
+                'database' => [
+                    'host' => $_ENV['DB_HOST'],
+                    'name' => $_ENV['DB_NAME'],
+                    'user' => $_ENV['DB_USER'],
+                    'pass' => $_ENV['DB_PASS']
+                ]
             ];
         });
     }

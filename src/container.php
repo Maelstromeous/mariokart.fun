@@ -5,8 +5,8 @@ use League\Container\Container;
 $container = new Container();
 
 $container->addServiceProvider(Maelstromeous\Mariokart\ServiceProvider\ConfigServiceProvider::class);
-$container->addServiceProvider(Maelstromeous\Mariokart\ServiceProvider\HttpMessageServiceProvider::class);
 $container->addServiceProvider(Maelstromeous\Mariokart\ServiceProvider\DatabaseServiceProvider::class);
+$container->addServiceProvider(Maelstromeous\Mariokart\ServiceProvider\HttpMessageServiceProvider::class);
 $container->addServiceProvider(Maelstromeous\Mariokart\ServiceProvider\TemplateServiceProvider::class);
 
 $container->inflector(Maelstromeous\Mariokart\Contract\ConfigAwareInterface::class)

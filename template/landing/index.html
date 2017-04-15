@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block title %}Welcome!{% endblock %}
+
+{% block body %}
+<main class="container">
+    <div class="col-xs-12 text-center">
+        <h1 class="display-4">Mariokart Race Tracker</h1>
+        <button class="btn btn-success btn-lg"><i class="fa fa-plus-circle"></i> New Championship <i class="fa fa-plus-circle"></i></button>
+    </div>
+    <hr>
+    <div class="col-xs-12 col-sm-10 offset-sm-1 text-center">
+        <h1>Standings</h1>
+        {% include 'landing/standings-table.html' %}
+    </div>
+</main>
+{% endblock %}

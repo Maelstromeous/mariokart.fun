@@ -1,0 +1,71 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Normal Character
+            </th>
+            <th>
+                Championships
+            </th>
+            <th>
+                Won Championships
+            </th>
+            <th>
+                Won Stages
+            </th>
+            <th>
+                Qualifies?
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+{% for player in standings %}
+        <tr {% if player.hex %}style="background-color: {{ player.hex }}"{% endif %}>
+            <td>
+                {{ player.player }}
+            </td>
+            <td>
+                {{ characters[player.defaultchar].name }}
+            </td>
+            <td>
+                {{ player.championships }}
+            </td>
+            <td>
+    {% if player.champ_wins is empty %}
+                0
+    {% else %}
+        {% set percentage = (player.champ_wins / player.championships) * 100 %}
+                {{ player.stage_wins }}
+                ({{ percentage }}%)
+    {% endif %}
+            </td>
+            <td>
+                {{ player.stage_wins }}
+    {% if player.stage_wins > 0 and player.championships > 0 %}
+        {% set percentage = (player.stage_wins / player.championships) * 100 %}
+                ({{ percentage }}%)
+    {% else %}
+                (0%)
+    {% endif %}
+            </td>
+            <td>
+    {% if player.qualifies %}
+                <span style="color: green"><i class="fa fa-check"></i></span>
+    {% else %}
+                <span style="color: red"><i class="fa fa-times"></i></span>
+    {% endif %}
+            </td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<div class="text-center">
+    <p>
+        A minimum of <b>{{ standings|first.qualification_limit|number_format(2) }}</b> championships are required in order to qualify.<br>
+        <small>This is calculated via: <b>(# championships / # players) - 10%</b>. This is to account for busy periods / sickness.</small>
+    </p>
+</div>

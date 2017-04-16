@@ -17,5 +17,6 @@ $container->inflector(Maelstromeous\Mariokart\Contract\TemplateAwareInterface::c
           ->invokeMethod('setTemplateDriver', ['Twig_Environment']);
 
 $container->add(Maelstromeous\Mariokart\Controller\MainController::class);
+$container->add(Maelstromeous\Mariokart\Controller\ChampionshipController::class);
 
 return $container;

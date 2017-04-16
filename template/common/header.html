@@ -5,7 +5,6 @@
     <a class="navbar-brand" href="{{ base_url }}">
         <img src="{{ asset_url }}/img/logo.png" class="img-fluid">
     </a>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
@@ -15,6 +14,8 @@
                 <a class="nav-link" href="{{ base_url }}/statistics">Statistics</a>
             </li>
         </ul>
-        <button class="btn btn-success my-2 my-sm-0"><i class="fa fa-plus-circle"></i> New Championship</button>
+        <a href="{{ base_url }}/championship/new" class="btn btn-success my-2 my-sm-0">
+            <i class="fa fa-plus-circle"></i> New Championship
+        </a>
     </div>
 </nav>

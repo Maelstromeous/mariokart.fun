@@ -28,15 +28,29 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
     {
         $config = $this->getContainer()->get('config');
         $version = $config['environment'] === 'production' ? $config ['version'] : date('U');
+        $vehicles = $this->getVehicles();
+
+        $statbars = [
+            'speed',
+            'weight',
+            'acceleration',
+            'handling',
+            'drift',
+            'offroad',
+            'miniturbo',
+        ];
 
         $globals = [
-            'base_url'    => $config['base_url'],
-            'asset_url'   => $config['base_url'] . '/assets',
-            'environment' => $config['environment'],
-            'version'     => "?v={$version}",
-            'tracks'      => $this->getTracks(),
-            'vehicles'    => $this->getVehicles(),
-            'characters'  => $this->getCharacters()
+            'asset_url'        => $config['base_url'] . '/assets',
+            'base_url'         => $config['base_url'],
+            'environment'      => $config['environment'],
+            'version'          => "?v={$version}",
+            'characters'       => $this->getCharacters(),
+            'players'          => $this->getplayers(),
+            'tracks'           => $this->getTracks(),
+            'vehicles'         => $vehicles,
+            'vehiclesJson'     => json_encode($vehicles),
+            'statbars'         => $statbars
         ];
 
         $this->getContainer()->share('Twig_Environment', function () use ($globals, $config) {
@@ -70,6 +84,7 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
         $query = $this->newSelectQuery();
         $query->cols(['*']);
         $query->from('tracks');
+        $query->orderBy(['name ASC']);
 
         $stm = $pdo->prepare($query->getStatement());
         $stm->execute($query->getBindValues());
@@ -91,6 +106,7 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
         $query = $this->newSelectQuery();
         $query->cols(['*']);
         $query->from('vehicles');
+        $query->orderBy(['name ASC']);
 
         $stm = $pdo->prepare($query->getStatement());
         $stm->execute($query->getBindValues());
@@ -114,6 +130,7 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
         $query = $this->newSelectQuery();
         $query->cols(['*']);
         $query->from('characters');
+        $query->orderBy(['name ASC']);
 
         $stm = $pdo->prepare($query->getStatement());
         $stm->execute($query->getBindValues());
@@ -126,6 +143,28 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
             $id = $character['id'];
             unset($character['id']);
             $return[$id] = $character;
+        }
+
+        return $return;
+    }
+
+    public function getplayers()
+    {
+        $pdo = $this->getContainer()->get('Database');
+        $query = $this->newSelectQuery();
+        $query->cols(['*']);
+        $query->from('players');
+        $query->orderBy(['name ASC']);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $rows = $stm->fetchAll($pdo::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $player) {
+            $return[$player['id']] = $player;
         }
 
         return $return;

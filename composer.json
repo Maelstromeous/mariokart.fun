@@ -1,10 +1,10 @@
 {
     "require": {
-        "league/container": "^2.2",
+        "league/container": "^2.4",
         "league/route": "^2.0",
-        "josegonzalez/dotenv": "^2.0",
-        "zendframework/zend-diactoros": "^1.3",
-        "twig/twig": "^1.24",
+        "josegonzalez/dotenv": "^2.1",
+        "zendframework/zend-diactoros": "^1.4",
+        "twig/twig": "^1.33",
         "aura/sqlquery": "^2.7",
         "aura/sql": "^2.5"
     },

@@ -1,9 +1,31 @@
 body {
     background-color: @bg-color;
+    padding-bottom: @spacing-base;
 }
 
 table {
     th {
         text-align: center;
+    }
+}
+
+.nomargin {
+    margin: 0;
+}
+
+.row+.row {
+    margin-bottom: @spacing-base;
+}
+
+// Super sexy button effect
+.btn {
+    border-radius: 0;
+    transition: all 0.15s ease-out;
+
+    &.btn-success {
+        &:hover {
+            box-shadow: inset 0 0 0 4px #3d7d3d;
+            border-color: #3d7d3d
+        }
     }
 }

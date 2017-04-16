@@ -1,0 +1,79 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<main id="new-championship">
+    <div class="fluid-container" id="step1">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="display-4 text-center">New Championship</h1>
+                    <hr>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h1 class="text-center">Players &amp; vehicles</h1>
+                </div>
+    {% for i in 1..4 %}
+                <div class="col-lg-3 col-md-6 col-sm-6 player-card text-center">
+                    <div class="row nomargin images">
+                        <div class="col-6">
+                            <img class="placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
+                            <select name="character-{{ i }}" class="form-control">
+                                <option value="0">Choose Character</option>
+                            {% for k, entry in characters %}
+                                <option value="{{ k }}">{{ entry.name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <img class="placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
+                            <select name="vehicle-{{ i }}" class="form-control">
+                                <option value="0">Choose Vehicle</option>
+                            {% for k, entry in vehicles %}
+                                <option value="{{ k }}">{{ entry.name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-8 offset-sm-2 player-select">
+                            <select name="vehicle-{{ i }}" class="form-control">
+                                <option value="0">Choose Player</option>
+                            {% for k, entry in players %}
+                                <option value="{{ k }}">{{ entry.name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row nomargin stat-bars text-left">
+                        <div class="col-12">
+                            {% for bar in statbars %}
+                            <div class="row align-items-center">
+                                <div class="col-sm-4 col-lg-5">
+                                    {{ bar|title }}
+                                </div>
+                                <div class="col">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="80" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <button class="btn btn-lg btn-success"><i class="fa fa-save"></i> Save</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var vehicleStats = '{{ vehiclesJson|raw }}';
+</script>
+<script src="{{ asset_url }}/js/championships.js{{ version }}"></script>
+{% endblock %}

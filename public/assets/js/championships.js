@@ -53,7 +53,7 @@ function setBars(elem, vehicle) {
     $(this).css('color', '#fff');
 
     /* Calculate proper 100% width as each propery has a different maximum...
-       although on the wiki it says 80? ¯\_(ツ)_/¯ ) */
+       although on the wiki it says 80? ¯\_(ツ)_/¯ */
 
     var statmod = stat - min;
     var maxmod = max - min;

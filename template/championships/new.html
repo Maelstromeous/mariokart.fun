@@ -36,7 +36,7 @@
                             </select>
                         </div>
                         <div class="col-sm-8 offset-sm-2 player-select">
-                            <select name="vehicle-{{ i }}" class="form-control">
+                            <select name="player-{{ i }}" class="form-control">
                                 <option value="0">Choose Player</option>
                             {% for k, entry in players %}
                                 <option value="{{ k }}">{{ entry.name }}</option>
@@ -67,8 +67,10 @@
                 {% endfor %}
             </div>
         </div>
+
         <div class="col-12 text-center">
-            <button class="btn btn-lg btn-success"><i class="fa fa-save"></i> Save</button>
+            <div class="alert alert-danger" id="form-errors"></div>
+            <button class="btn btn-lg btn-success" id="submit">Next <i class="fa fa-arrow-right"></i></button>
         </div>
     </div>
 </main>

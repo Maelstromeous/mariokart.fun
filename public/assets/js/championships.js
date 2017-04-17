@@ -26,8 +26,19 @@ $('select[name^="character-"]').change(function () {
 $('select[name^="vehicle-"]').change(function () {
   var vehicle = $(this).val();
 
-  resetBars($(this));
+  // Reset any validation error colourings
+  $(this).css('background-color', '');
+
+  if (vehicle == '0') {
+    resetBars($(this));
+  }
+
   setBars($(this), vehicle);
+});
+
+$('select[name^="player-"]').change(function () {
+  // Reset any validation error colourings
+  $(this).css('background-color', '');
 });
 
 function resetBars(elem) {
@@ -83,3 +94,77 @@ function setBars(elem, vehicle) {
     }
   });
 }
+
+$('#submit').click(function () {
+  $('#form-errors').html('').hide();
+  var data = {
+    players: [],
+  };
+  var valid = true;
+
+  // Check for valid data and populate params if so
+  $('.player-card').each(function (index, el) {
+    console.log(el);
+    var id = $(el).attr('data-id');
+    var character = $(el).find('select[name^="character-"]').val();
+    var vehicle = $(el).find('select[name^="vehicle-"]').val();
+    var player = $(el).find('select[name^="player-"]').val();
+
+    if (!character || character == 0) {
+      return false;
+    }
+
+    if (!vehicle || vehicle == 0) {
+      $('#form-errors').html('A character is missing a vehicle. ' +
+        'Please correct and try again.').show();
+      $(el).find('select[name^="vehicle-"]').css('background-color', '#ff8585');
+      valid = false;
+      return false;
+    }
+
+    if (!player || player == 0) {
+      $('#form-errors').html('A character is missing the player. ' +
+        'Please correct and try again.').show();
+      $(el).find('select[name^="player-"]').css('background-color', '#ff8585');
+      valid = false;
+      return false;
+    }
+
+    var obj = {
+      character: character,
+      vehicle: vehicle,
+      player: player,
+    };
+
+    data.players.push(obj);
+  });
+
+  if (!valid) {
+    return false;
+  }
+
+  if (data.players.length === 0) {
+    alert('No data to submit!');
+    return false;
+  }
+
+  $('#submit i').removeClass('fa-arrow-right').addClass('fa-refresh fa-spin');
+
+  // Now we've passed validation and we have data to send
+  $.ajax({
+    url: baseUrl + '/championships/new',
+    type: 'POST',
+    dataType: 'json',
+    data: JSON.stringify(data),
+  })
+  .done(function (returned) {
+    $('#submit i').removeClass('fa-refresh fa-spin').addClass('fa-check');
+    window.location.replace(baseUrl + '/championship/' + returned.id);
+  })
+  .fail(function (xhr, textStatus, error) {
+    console.log('xhr', xhr);
+    console.log('error', error);
+    $('#form-errors').html('A server error occured: ' + error).show();
+    $('#submit i').removeClass('fa-refresh fa-spin').addClass('fa-arrow-right');
+  });
+});

@@ -16,7 +16,6 @@ $('select[name^="character-"]').change(function () {
 
   // Pull in image
   var image = $(this).parents('.player-card').find('img.character').first();
-  console.log(image);
   if (val > 0) {
     image.attr('src', assetUrl + '/img/characters/' + val + '.jpg');
   } else {
@@ -26,12 +25,9 @@ $('select[name^="character-"]').change(function () {
 
 $('select[name^="vehicle-"]').change(function () {
   var vehicle = $(this).val();
-  console.log(vehicle);
 
   resetBars($(this));
   setBars($(this), vehicle);
-
-
 });
 
 function resetBars(elem) {
@@ -68,10 +64,21 @@ function setBars(elem, vehicle) {
     $(this).css('width', width.toFixed(2) + '%');
     $(this).html(stat);
 
-    if (width > 75) {
-      $(this).addClass('bg-success');
-    } else if (width < 25) {
-      $(this).addClass('bg-danger');
+    if (prop === 'weight') {
+      if (width < 25) {
+        $(this).addClass('bg-success');
+      } else if (width > 75) {
+        $(this).addClass('bg-danger');
+      }
+    } else {
+      if (width > 75) {
+        $(this).addClass('bg-success');
+      } else if (width < 25) {
+        $(this).addClass('bg-danger');
+      }
+    }
+
+    if (width < 15) {
       $(this).css('color', '#000');
     }
   });

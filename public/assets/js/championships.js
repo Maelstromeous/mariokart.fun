@@ -52,8 +52,6 @@ function setBars(elem, vehicle) {
     var max = $(this).attr('data-max');
     var stat = parseInt(vehicleStats[vehicle][prop]);
 
-    console.log(vehicleStats[vehicle]);
-
     // Colour bars depending on good or bad
     $(this).removeClass('bg-success bg-danger');
     $(this).css('color', '#fff');
@@ -64,7 +62,8 @@ function setBars(elem, vehicle) {
     var statmod = stat - min;
     var maxmod = max - min;
     var width = (statmod / maxmod) * 100;
-    console.log(`(${statmod} / ${maxmod}) * 100 = ${width}`);
+
+    // console.log(`(${statmod} / ${maxmod}) * 100 = ${width}`);
 
     $(this).css('width', width.toFixed(2) + '%');
     $(this).html(stat);

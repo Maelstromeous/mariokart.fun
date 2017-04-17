@@ -46,14 +46,17 @@
                     </div>
                     <div class="row nomargin stat-bars text-left">
                         <div class="col-12">
-                            {% for bar in statbars %}
+                            {% for bar, limits in statBars %}
                             <div class="row align-items-center">
                                 <div class="col-sm-4 col-lg-5">
                                     {{ bar|title }}
+                                    {% if bar == 'weight' %}
+                                        <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Weight colouring is proportional to the class. E.g. a weight of 35 for small is heaviest"></i>
+                                    {% endif %}
                                 </div>
                                 <div class="col">
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="80" style="width: 0%;"></div>
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="80" style="width: 0%;" data-prop="{{ bar }}" data-min="{{ limits.min }}" data-max="{{ limits.max }}"></div>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +76,8 @@
 
 {% block scripts %}
 <script>
-    var vehicleStats = '{{ vehiclesJson|raw }}';
+    var vehicleStats = JSON.parse('{{ vehiclesJson|raw }}');
+    var statBars = JSON.parse('{{ statBarsJson|raw }}');
 </script>
 <script src="{{ asset_url }}/js/championships.js{{ version }}"></script>
 {% endblock %}

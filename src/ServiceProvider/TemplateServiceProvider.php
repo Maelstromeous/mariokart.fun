@@ -30,14 +30,14 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
         $version = $config['environment'] === 'production' ? $config ['version'] : date('U');
         $vehicles = $this->getVehicles();
 
-        $statbars = [
-            'speed',
-            'weight',
-            'acceleration',
-            'handling',
-            'drift',
-            'offroad',
-            'miniturbo',
+        $statBars = [
+            'speed'        => ['min' => 25, 'max' => 69],
+            'weight'       => ['min' => 17, 'max' => 67],
+            'acceleration' => ['min' => 16, 'max' => 67],
+            'handling'     => ['min' => 18, 'max' => 67],
+            'drift'        => ['min' => 17, 'max' => 67],
+            'offroad'      => ['min' => 16, 'max' => 73],
+            'miniturbo'    => ['min' => 16, 'max' => 67]
         ];
 
         $globals = [
@@ -50,7 +50,8 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
             'tracks'           => $this->getTracks(),
             'vehicles'         => $vehicles,
             'vehiclesJson'     => json_encode($vehicles),
-            'statbars'         => $statbars
+            'statBars'         => $statBars,
+            'statBarsJson'     => json_encode($statBars)
         ];
 
         $this->getContainer()->share('Twig_Environment', function () use ($globals, $config) {

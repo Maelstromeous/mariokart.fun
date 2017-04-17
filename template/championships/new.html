@@ -15,23 +15,23 @@
                     <h1 class="text-center">Players &amp; vehicles</h1>
                 </div>
     {% for i in 1..4 %}
-                <div class="col-lg-3 col-md-6 col-sm-6 player-card text-center">
+                <div class="col-lg-3 col-md-6 col-sm-6 player-card text-center" data-id="{{ i }}">
                     <div class="row nomargin images">
                         <div class="col-6">
-                            <img class="placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
+                            <img class="character placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
                             <select name="character-{{ i }}" class="form-control">
                                 <option value="0">Choose Character</option>
                             {% for k, entry in characters %}
-                                <option value="{{ k }}">{{ entry.name }}</option>
+                                <option value="{{ k }}" data-size="{{ entry.size }}">{{ entry.name }}</option>
                             {% endfor %}
                             </select>
                         </div>
                         <div class="col-6">
-                            <img class="placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
-                            <select name="vehicle-{{ i }}" class="form-control">
+                            <img class="vehicle placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
+                            <select name="vehicle-{{ i }}" class="form-control" disabled>
                                 <option value="0">Choose Vehicle</option>
                             {% for k, entry in vehicles %}
-                                <option value="{{ k }}">{{ entry.name }}</option>
+                                <option value="{{ k }}" data-size="{{ entry.size }}">{{ entry.name }}</option>
                             {% endfor %}
                             </select>
                         </div>

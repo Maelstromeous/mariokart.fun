@@ -1,3 +1,7 @@
+{% if standings|length > 0 %}
+<p>
+    Showing standings between {{ 'now'|date('01/m/Y')}} and {{ 'now'|date('t/m/Y')}}
+</p>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -22,7 +26,7 @@
         </tr>
     </thead>
     <tbody>
-{% for player in standings %}
+    {% for player in standings %}
         <tr {% if player.hex %}style="background-color: {{ player.hex }}"{% endif %}>
             <td>
                 {{ player.player }}
@@ -34,32 +38,32 @@
                 {{ player.championships }}
             </td>
             <td>
-    {% if player.champ_wins is empty %}
+        {% if player.champ_wins is empty %}
                 0
-    {% else %}
-        {% set percentage = (player.champ_wins / player.championships) * 100 %}
+        {% else %}
+            {% set percentage = (player.champ_wins / player.championships) * 100 %}
                 {{ player.stage_wins }}
                 ({{ percentage }}%)
-    {% endif %}
+        {% endif %}
             </td>
             <td>
                 {{ player.stage_wins }}
-    {% if player.stage_wins > 0 and player.championships > 0 %}
-        {% set percentage = (player.stage_wins / player.championships) * 100 %}
+        {% if player.stage_wins > 0 and player.championships > 0 %}
+            {% set percentage = (player.stage_wins / player.championships) * 100 %}
                 ({{ percentage }}%)
-    {% else %}
+        {% else %}
                 (0%)
-    {% endif %}
+        {% endif %}
             </td>
             <td>
-    {% if player.qualifies %}
+        {% if player.qualifies %}
                 <span style="color: green"><i class="fa fa-check"></i></span>
-    {% else %}
+        {% else %}
                 <span style="color: red"><i class="fa fa-times"></i></span>
-    {% endif %}
+        {% endif %}
             </td>
         </tr>
-{% endfor %}
+    {% endfor %}
     </tbody>
 </table>
 
@@ -69,3 +73,6 @@
         <small>This is calculated via: <b>(# championships / # players) - 10%</b>. This is to account for busy periods / sickness.</small>
     </p>
 </div>
+{% else %}
+<h3 class="text-center">No standings recorded!</h3>
+{% endif %}

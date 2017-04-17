@@ -17,7 +17,7 @@ $('select[name^="character-"]').change(function () {
   // Pull in image
   var image = $(this).parents('.player-card').find('img.character').first();
   if (val > 0) {
-    image.attr('src', assetUrl + '/img/characters/' + val + '.jpg');
+    image.attr('src', assetUrl + '/img/characters/' + val + '.jpg' + version);
   } else {
     image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png');
   }
@@ -44,7 +44,7 @@ function setBars(elem, vehicle) {
 
   $(bars).each(function (index, el) {
     var prop = $(this).attr('data-prop');
-    var min = $(this).attr('data-min');
+    var min = $(this).attr('data-min') - 1; // - 2 so we can see the edge
     var max = $(this).attr('data-max');
     var stat = parseInt(vehicleStats[vehicle][prop]);
 

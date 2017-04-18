@@ -39,6 +39,38 @@ $('select[name^="vehicle-"]').change(function () {
 $('select[name^="player-"]').change(function () {
   // Reset any validation error colourings
   $(this).css('background-color', '');
+
+  var data = { id: $(this).val() };
+  var $elem = $(this);
+
+  // Grab players defaults and apply them if present
+  $.ajax({
+    url: baseUrl + '/misc/player-defaults',
+    type: 'POST',
+    dataType: 'json',
+    data: JSON.stringify(data),
+  })
+  .done(function (returned) {
+    console.log(returned);
+
+    // If we have the values, set them
+    if (returned.character) {
+      $elem.parents('.player-card')
+        .find('select[name^="character-"]')
+        .val(returned.character)
+        .trigger('change');
+    }
+
+    if (returned.vehicle) {
+      $elem.parents('.player-card')
+        .find('select[name^="vehicle-"]')
+        .val(returned.vehicle)
+        .trigger('change');
+    }
+  })
+  .fail(function (xhr, textStatus, error) {
+
+  });
 });
 
 function resetBars(elem) {

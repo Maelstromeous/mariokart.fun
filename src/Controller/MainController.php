@@ -96,4 +96,36 @@ class MainController extends AbstractController
                 ORDER BY champ_win_perc DESC, stage_win_perc DESC, champ_wins DESC";
         return $pdo->query($sql, $pdo::FETCH_OBJ)->fetchAll();
     }
+
+    /**
+     * Provides the players default character and vehicle for auto population
+     *
+     * @param  Psr\Http\Message\ServerRequestInterface $request
+     * @param  Psr\Http\Message\ResponseInterface      $response
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     */
+    public function getPlayerDefaults(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $post = json_decode($request->getBody()->getContents());
+        $id = $post->id;
+
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+        $query->from('players');
+        $query->cols([
+            'defaultchar AS character',
+            'defaultvehicle AS vehicle'
+        ]);
+        $query->where('id = ?', $id);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $result = $stm->fetch($pdo::FETCH_OBJ);
+
+        $response->getBody()->write(
+            json_encode($result)
+        );
+    }
 }

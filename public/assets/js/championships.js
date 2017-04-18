@@ -68,10 +68,9 @@ $('select[name^="player-"]').change(function () {
         .val(returned.vehicle)
         .trigger('change');
     }
-  })
-  .fail(function (xhr, textStatus, error) {
-
   });
+
+  // Don't care if it fails
 });
 
 function resetBars(elem) {

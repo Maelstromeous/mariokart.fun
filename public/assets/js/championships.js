@@ -61,7 +61,8 @@ $('select[name^="player-"]').change(function () {
         .trigger('change');
     }
 
-    if (returned.vehicle) {
+    // Require both for vehicle otherwise we might get round validation
+    if (returned.character && returned.vehicle) {
       $elem.parents('.player-card')
         .find('select[name^="vehicle-"]')
         .val(returned.vehicle)

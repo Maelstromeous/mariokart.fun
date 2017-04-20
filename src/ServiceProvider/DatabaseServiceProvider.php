@@ -24,7 +24,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             $config = $this->getContainer()->get('config')['database'];
 
             $pdo = new ExtendedPdo(
-                "mysql:host={$config['host']};dbname={$config['name']}",
+                "mysql:host={$config['host']};port={$config['port']};dbname={$config['name']}",
                 $config['user'],
                 $config['pass']
             );

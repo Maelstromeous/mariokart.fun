@@ -1,7 +1,7 @@
 ENVIRONMENT = development
 BASE_URL = http://dev.mariokart.fun
-DB_HOST = mysql // Relative to the Docker Host
+DB_HOST = "localdev_mysql_1" // Relative to the Docker Host
 DB_PORT = 3306
-DB_PASS = local
 DB_USER = local
+DB_PASS = local
 DB_NAME = mariokart

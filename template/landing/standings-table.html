@@ -43,14 +43,14 @@
         {% else %}
             {% set percentage = (player.champ_wins / player.championships) * 100 %}
                 {{ player.stage_wins }}
-                ({{ percentage }}%)
+                ({{ percentage|number_format(1) }}%)
         {% endif %}
             </td>
             <td>
                 {{ player.stage_wins }}
         {% if player.stage_wins > 0 and player.championships > 0 %}
-            {% set percentage = (player.stage_wins / player.championships) * 100 %}
-                ({{ percentage }}%)
+            {% set percentage = (player.stage_wins / player.stages) * 100 %}
+                ({{ percentage|number_format(1) }}%)
         {% else %}
                 (0%)
         {% endif %}

@@ -6,6 +6,16 @@
         <div class="col-xs-12">
             <h1 class="text-center">Championship #{{ data.championship.id }}</h1>
         </div>
+        {% for key, stage in data.stages %}
+        <div class="row nomargin stage" data-id="{{ stage.id }}">
+            <div class="col-xs-12 col-sm-4">
+                <img class="img-fluid" src="{{ asset_url }}/img/tracks/{{ stage.track }}.jpg">
+            </div>
+            <div class="col-xs-12 col-sm-8">
+                <h3 class="header">Stage #{{ key }} - {{ stage.name }}</h3>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </main>
 {{ dump(data) }}

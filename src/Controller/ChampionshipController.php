@@ -99,7 +99,7 @@ class ChampionshipController extends AbstractController
 
         $response->getBody()->write(
             $this->getTemplateDriver()->render(
-                'championships/race.html', ['data' => $champData]
+                'championships/championship.html', ['data' => $champData]
             )
         );
     }

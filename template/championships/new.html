@@ -16,11 +16,21 @@
                 </div>
     {% for i in 1..4 %}
                 <div class="col-lg-3 col-md-6 col-sm-6 player-card text-center" data-id="{{ i }}">
+                    <div class="row">
+                        <div class="col-sm-8 offset-sm-2 player-select">
+                            <select name="player-{{ i }}" class="form-control">
+                                <option value="0">Player</option>
+                            {% for k, entry in players %}
+                                <option value="{{ k }}">{{ entry.name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                     <div class="row nomargin images">
                         <div class="col-6">
                             <img class="character placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
                             <select name="character-{{ i }}" class="form-control">
-                                <option value="0">Choose Character</option>
+                                <option value="0">Character</option>
                             {% for k, entry in characters %}
                                 <option value="{{ k }}" data-size="{{ entry.size }}">{{ entry.name }}</option>
                             {% endfor %}
@@ -29,17 +39,9 @@
                         <div class="col-6">
                             <img class="vehicle placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
                             <select name="vehicle-{{ i }}" class="form-control" disabled>
-                                <option value="0">Choose Vehicle</option>
+                                <option value="0">Vehicle</option>
                             {% for k, entry in vehicles %}
                                 <option value="{{ k }}" data-size="{{ entry.size }}">{{ entry.name }}</option>
-                            {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-sm-8 offset-sm-2 player-select">
-                            <select name="player-{{ i }}" class="form-control">
-                                <option value="0">Choose Player</option>
-                            {% for k, entry in players %}
-                                <option value="{{ k }}">{{ entry.name }}</option>
                             {% endfor %}
                             </select>
                         </div>

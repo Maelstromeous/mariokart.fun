@@ -12,4 +12,6 @@ $router->get('/', 'Maelstromeous\Mariokart\Controller\MainController::index');
 $router->get('/championships/new', 'Maelstromeous\Mariokart\Controller\ChampionshipController::new');
 $router->post('/championships/new', 'Maelstromeous\Mariokart\Controller\ChampionshipController::commitNewChampionship');
 
+$router->post('/misc/player-defaults', 'Maelstromeous\Mariokart\Controller\MainController::getPlayerDefaults');
+
 return $router;

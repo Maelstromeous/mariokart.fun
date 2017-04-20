@@ -72,18 +72,23 @@ class MainController extends AbstractController
                         SELECT
                             COUNT(DISTINCT(id)) AS `wins`,
                             champion
-                        FROM championships
+                        FROM championships AS c
+                        WHERE c.valid = 1
+                        AND c.finished = 1
                         GROUP BY id
                     ) AS ch ON ch.champion = p.id
-                    WHERE valid = 1
+                    WHERE c.valid = 1
+                    AND c.finished = 1
                     AND `date` BETWEEN '{$dateFrom}' AND '{$dateTo}'
                     GROUP BY p.name, p.defaultchar
                 ) AS dt,
                 (
-                    # Get total number of championships to run qualitification checks
+                    # Get total number of championships to run qualification checks
                     SELECT
                         COUNT(id) AS `count`
                     FROM championships
+                    WHERE valid = 1
+                    AND finished = 1
                 ) AS `total_champs`,
                 (
                     # Get the total number of participated players for qualification checks

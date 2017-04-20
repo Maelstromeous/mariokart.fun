@@ -17,7 +17,7 @@ class ChampionshipController extends AbstractController
      *
      * @return Psr\Http\Message\ResponseInterface
      */
-    public function new(ServerRequestInterface $request, ResponseInterface $response)
+    public function newChampionship(ServerRequestInterface $request, ResponseInterface $response)
     {
         $response->getBody()->write(
             $this->getTemplateDriver()->render(
@@ -41,7 +41,7 @@ class ChampionshipController extends AbstractController
         // Validate that we have the info we need first
 
         try {
-            $this->validatePOST($json);
+            $this->validateChampionshipPOST($json);
         } catch (InvalidDataException $e) {
             $response->getBody()->write(
                 json_encode(['error' => $e->getMessage()])
@@ -84,7 +84,15 @@ class ChampionshipController extends AbstractController
         );
     }
 
-    private function validatePOST($json)
+	/**
+	 * Validates the POST request for creating a new championship
+	 *
+	 * @param  [type] $json [description]
+	 *
+	 * @return [type]       [description]
+	 */
+	
+    private function validateChampionshipPOST($json)
     {
         foreach ($json->players as $player) {
             if (empty($player->character)) {

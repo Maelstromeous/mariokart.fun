@@ -97,26 +97,27 @@ trait DatabaseAwareTrait
      * Helper function to execute the query and return
      *
      * @param  QueryInterface $query    Query object
+     * @param  boolean        $multiple Flag whether to return all records
      * @param  string         $returnAs Flag to specify return type
      *
      * @return mixed                    Array by default
      */
-    public function executeQuery(QueryInterface $query, $returnAs = null)
+    public function executeQuery(QueryInterface $query, $multiple = false, $returnAs = null)
     {
         $pdo = $this->getDatabaseDriver();
 
         $stm = $pdo->prepare($query->getStatement());
         $stm->execute($query->getBindValues());
 
-        if ($returnAs === null) {
-            return $stm->fetch($pdo::FETCH_OBJ);
-        }
-
+        $returnType = $pdo::FETCH_OBJ;
         if ($returnAs === 'array') {
-            return $stm->fetch($pdo::FETCH_ASSOC);
+            $returnType = $pdo::FETCH_OBJ;
         }
 
-        throw new \Exception('Invalid return type specified!');
+        if ($multiple === true) {
+            return $stm->fetchAll($returnType);
+        }
+        return $stm->fetch($returnType);
     }
 
     /**

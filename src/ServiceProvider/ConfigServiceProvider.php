@@ -17,6 +17,11 @@ class ConfigServiceProvider extends AbstractServiceProvider
     public function register()
     {
         $this->getContainer()->share('config', function () {
+            // Set xdebug settings if env is dev
+            if ($_ENV['ENVIRONMENT'] === 'development') {
+                ini_set('xdebug.var_display_max_depth', 10);
+            }
+
             return [
                 'environment' => $_ENV['ENVIRONMENT'],
                 'base_url'    => $_ENV['BASE_URL'],

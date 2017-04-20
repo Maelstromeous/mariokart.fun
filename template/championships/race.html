@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+
+{% block body %}
+<main id="championship">
+    <div class="fluid-container">
+        <div class="col-xs-12">
+            <h1 class="text-center">Championship #{{ data.championship.id }}</h1>
+        </div>
+    </div>
+</main>
+{{ dump(data) }}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var vehicleStats = JSON.parse('{{ vehiclesJson|raw }}');
+    var statBars = JSON.parse('{{ statBarsJson|raw }}');
+</script>
+<script src="{{ asset_url }}/js/race.js{{ version }}"></script>
+{% endblock %}

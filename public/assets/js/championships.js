@@ -51,8 +51,6 @@ $('select[name^="player-"]').change(function () {
     data: JSON.stringify(data),
   })
   .done(function (returned) {
-    console.log(returned);
-
     // If we have the values, set them
     if (returned.character) {
       $elem.parents('.player-card')

@@ -4,6 +4,7 @@ namespace Maelstromeous\Mariokart\Contract;
 
 use Aura\Sql\ExtendedPdo as DBDriver;
 use Aura\SqlQuery\QueryFactory;
+use Aura\SqlQuery\QueryInterface;
 
 trait DatabaseAwareTrait
 {
@@ -90,5 +91,47 @@ trait DatabaseAwareTrait
     public function newDeleteQuery()
     {
         return $this->getQueryFactory()->newDelete();
+    }
+
+    /**
+     * Helper function to execute the query and return
+     *
+     * @param  QueryInterface $query    Query object
+     * @param  string         $returnAs Flag to specify return type
+     *
+     * @return mixed                    Array by default
+     */
+    public function executeQuery(QueryInterface $query, $returnAs = null)
+    {
+        $pdo = $this->getDatabaseDriver();
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        if ($returnAs === null) {
+            return $stm->fetch($pdo::FETCH_OBJ);
+        }
+
+        if ($returnAs === 'array') {
+            return $stm->fetch($pdo::FETCH_ASSOC);
+        }
+
+        throw new \Exception('Invalid return type specified!');
+    }
+
+    /**
+     * Special Insert query function that returns the ID of the last entry
+     *
+     * @param  QueryInterface $query
+     *
+     * @return int
+     */
+    public function executeInsertQuery(QueryInterface $query, $key = 'id')
+    {
+        $pdo = $this->getDatabaseDriver();
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        return $pdo->lastInsertId($query->getLastInsertIdName($key));
     }
 }

@@ -68,6 +68,7 @@ class ChampionshipController extends AbstractController
             $query->cols([
                 'player'       => $player->player,
                 'championship' => $id,
+				'character'    => $player->character,
                 'vehicle'      => $player->vehicle
             ]);
 

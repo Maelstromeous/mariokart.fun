@@ -68,7 +68,7 @@ class ChampionshipController extends AbstractController
             $query->cols([
                 'player'       => $player->player,
                 'championship' => $id,
-				'character'    => $player->character,
+                'character'    => $player->character,
                 'vehicle'      => $player->vehicle
             ]);
 
@@ -105,14 +105,14 @@ class ChampionshipController extends AbstractController
         );
     }
 
-	/**
-	 * Validates the POST request for creating a new championship
-	 *
-	 * @param  string $json [description]
-	 *
-	 * @return void
-	 * @throws Maelstromeous\Mariokart\Exception\InvalidDataException
-	 */
+    /**
+     * Validates the POST request for creating a new championship
+     *
+     * @param  string $json [description]
+     *
+     * @return void
+     * @throws Maelstromeous\Mariokart\Exception\InvalidDataException
+     */
     private function validateChampionshipPOST($json)
     {
         foreach ($json->players as $player) {
@@ -169,10 +169,10 @@ class ChampionshipController extends AbstractController
         $data['stages'] = $this->executeQuery($select, true);
 
         // Reindex the keys by stage #
-        $data['stages'] = array_combine(range(1, count($data['stages'])), array_values($data['stages']));
 
         // For each stage, pull in positions if applicable
         if (count($data['stages']) > 0) {
+            $data['stages'] = array_combine(range(1, count($data['stages'])), array_values($data['stages']));
             // Get stage IDs
             $ids = [];
             foreach ($data['stages'] as $stage) {
@@ -206,24 +206,24 @@ class ChampionshipController extends AbstractController
                     $row->positions = null;
                 }
             }
+        }
 
-            // Get the player and vehicle information
-            $select = $this->newSelectQuery();
-            $select->from('championships_players_vehicles AS cpv')
-                   ->cols(['cpv.*', 'p.name AS playerName'])
-                   ->join(
-                        'INNER',
-                        'players AS p',
-                        'cpv.player = p.id'
-                    )
-                    ->where('cpv.championship = ?', $id);
+        // Get the player and vehicle information
+        $select = $this->newSelectQuery();
+        $select->from('championships_players_vehicles AS cpv')
+               ->cols(['cpv.*', 'p.name AS playerName'])
+               ->join(
+                    'INNER',
+                    'players AS p',
+                    'cpv.player = p.id'
+                )
+                ->where('cpv.championship = ?', $id);
 
-            $result = $this->executeQuery($select, true);
+        $result = $this->executeQuery($select, true);
 
-            // Sort players by their ID
-            foreach ($result as $player) {
-                $data['players'][$player->player] = $player;
-            }
+        // Sort players by their ID
+        foreach ($result as $player) {
+            $data['players'][$player->player] = $player;
         }
 
         return $data;

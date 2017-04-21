@@ -3,19 +3,71 @@
 {% block body %}
 <main id="championship">
     <div class="fluid-container">
-        <div class="col-xs-12">
-            <h1 class="text-center">Championship #{{ data.championship.id }}</h1>
+        <div class="col-xs-12 text-center" id="top">
+            <h1>Championship #{{ data.championship.id }}</h1>
+            <h3>{{ data.championship.date|date('d/m/Y H:i') }}</h3>
+        {% if data.finished == 1 %}
+            <button class="btn btn-success">Finished</button>
+        {% else %}
+            <button class="btn btn-info">In Progress</button>
+        {% endif %}
         </div>
-        {% for key, stage in data.stages %}
-        <div class="row nomargin stage" data-id="{{ stage.id }}">
-            <div class="col-xs-12 col-sm-4">
+        <div class="row nomargin">
+        {% for i in 1..5 %}
+            {% set stage = data.stages[i] %}
+            {% if stage %}
+            <div class="col-xs-12 col-sm-6 col-md-3 stage" data-id="{{ stage.id }}">
                 <img class="img-fluid" src="{{ asset_url }}/img/tracks/{{ stage.track }}.jpg">
+                <h3 class="header text-center">Stage #{{ i }} - {{ stage.name }}</h3>
+                {% if stage.positions %}
+                <div class="positions row nomargin">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>
+                                Player
+                            </th>
+                            <th>
+                                Position
+                            </th>
+                            <th>
+                                Character
+                            </th>
+                            <th>
+                                Vehicle
+                            </th>
+                        </tr>
+                        {% for player in stage.positions %}
+                            {% set playerData = data.players[player.player] %}
+                        <tr data-id="{{ player.player }}" class="text-center">
+                            <td>
+                                {{ playerData.playerName }}
+                            </td>
+                            <td>
+                                {{ player.position }}
+                            </td>
+                            <td>
+                                {{ characters[playerData.character].name }}
+                            </td>
+                            <td>
+                                {{ vehicles[playerData.vehicle].name }}
+                            </td>
+                        </div>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
             </div>
-            <div class="col-xs-12 col-sm-8">
-                <h3 class="header">Stage #{{ key }} - {{ stage.name }}</h3>
-            </div>
+                {% endif %}
+            {% endif  %}
         </div>
         {% endfor %}
+        {% if data.championship.finished == 0 %}
+        <div class="col-xs-12 text-center">
+            <button class="btn btn-success btn-lg">
+                <i class="fa fa-plus"></i> Add new stage
+            </button>
+        </div>
+        {% endif %}
     </div>
 </main>
 {{ dump(data) }}

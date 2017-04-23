@@ -1,9 +1,15 @@
 #header {
     border-bottom: 1px solid #ccc;
     margin-bottom: @spacing-base;
+
     .navbar-brand {
         img {
             max-height: 50px;
+
+            @media @md-down {
+                max-width: 185px;
+                max-height: initial;
+            }
         }
     }
 }

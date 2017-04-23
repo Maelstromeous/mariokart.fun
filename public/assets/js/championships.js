@@ -19,7 +19,7 @@ $('select[name^="character-"]').change(function () {
   if (val > 0) {
     image.attr('src', assetUrl + '/img/characters/' + val + '.jpg' + version);
   } else {
-    image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png');
+    image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png' + version);
   }
 });
 

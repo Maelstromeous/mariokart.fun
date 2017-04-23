@@ -96,11 +96,17 @@ class ChampionshipController extends AbstractController
         array $args
     ) {
         // Grab championship details
-        $champData = $this->getChampionshipData($args['id']);
+        $data = $this->getChampionshipData($args['id']);
+
+        if ($data['championship']->finished == '0') {
+            $data['tracks'] = $this->getTracks();
+        }
 
         $response->getBody()->write(
             $this->getTemplateDriver()->render(
-                'championships/championship.html', ['data' => $champData]
+                'championships/championship.html', [
+                    'data' => $data
+                ]
             )
         );
     }
@@ -108,7 +114,7 @@ class ChampionshipController extends AbstractController
     /**
      * Validates the POST request for creating a new championship
      *
-     * @param  string $json [description]
+     * @param  string $json
      *
      * @return void
      * @throws Maelstromeous\Mariokart\Exception\InvalidDataException
@@ -227,5 +233,20 @@ class ChampionshipController extends AbstractController
         }
 
         return $data;
+    }
+
+    /**
+     * Gets all tracks and their info
+     *
+     * @return array
+     */
+    public function getTracks()
+    {
+        $select = $this->newSelectQuery();
+        $select->from('tracks')
+               ->cols(['*'])
+               ->orderBy(['name ASC']);
+
+        return $this->executeQuery($select, true);
     }
 }

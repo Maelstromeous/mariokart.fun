@@ -79,6 +79,7 @@
 <script>
     var vehicleStats = JSON.parse('{{ vehiclesJson|raw }}');
     var statBars = JSON.parse('{{ statBarsJson|raw }}');
+	var stageCount = '{{ data.stages|length }}';
 </script>
 <script src="{{ asset_url }}/js/stages.js{{ version }}"></script>
 {% endblock %}

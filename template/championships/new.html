@@ -16,6 +16,18 @@
                 <div class="col-12">
                     <h1 class="text-center">Players &amp; vehicles</h1>
                 </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 text-center">
+                    <span>
+                        Platform:
+                    </span>
+                    <select name="platform" id="platform" class="form-control">
+    {% for platform in platforms %}
+                        <option value="{{ platform.id }}">{{ platform.name }}</option>
+    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row justify-content-center">
     {% for i in 1..4 %}
                 <div class="col-lg-3 col-md-6 col-sm-6 player-card text-center" data-id="{{ i }}">
                     <div class="row">
@@ -31,7 +43,7 @@
                     <div class="row nomargin images">
                         <div class="col-6">
                             <img class="character placeholder img-fluid img-thumbnail" src="{{ asset_url }}/img/GoldenMushie-Faded.png">
-                            <select name="character-{{ i }}" class="form-control">
+                            <select name="character-{{ i }}" class="form-control" disabled>
                                 <option value="0">Character</option>
                             {% for k, entry in characters %}
                                 <option value="{{ k }}" data-size="{{ entry.size }}">{{ entry.name }}</option>

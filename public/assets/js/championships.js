@@ -18,6 +18,7 @@ $('select[name^="player-"]').change(function () {
       $elem.parents('.player-card')
         .find('select[name^="character-"]')
         .val(returned.character)
+        .prop('disabled', false)
         .trigger('change');
     }
 
@@ -52,8 +53,10 @@ $('select[name^="character-"]').change(function () {
 
   // Pull in image
   var image = $(this).parents('.player-card').find('img.character').first();
+  var platform = $('#platform').find(':selected').val();
   if (val > 0) {
-    image.attr('src', assetUrl + '/img/characters/' + val + '.jpg' + version);
+    image.attr('src', assetUrl + '/img/characters/platform-' + platform + '/' +
+      val + '.jpg' + version);
   } else {
     image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png' + version);
   }
@@ -69,8 +72,10 @@ $('select[name^="vehicle-"]').change(function () {
   $(this).css('background-color', '');
 
   var image = $(this).parents('.player-card').find('img.vehicle').first();
+  var platform = $('#platform').find(':selected').val();
   if (val > 0) {
-    image.attr('src', assetUrl + '/img/vehicles/' + val + '.jpg' + version);
+    image.attr('src', assetUrl + '/img/vehicles/platform-' + platform + '/' +
+      val + '.jpg' + version);
   } else {
     image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png' + version);
   }

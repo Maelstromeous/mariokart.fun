@@ -15,4 +15,154 @@ abstract class AbstractController implements
 {
     use DatabaseAwareTrait;
     use TemplateAwareTrait;
+
+    /**
+     * Gets all tracks based off platform ID
+     *
+     * @var $platform integer Platform to filter by
+     *
+     * @return array
+     */
+    public function getTracks($platform)
+    {
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+        $query->cols(['*']);
+        $query->from('tracks');
+        $query->where('platform = ?', $platform);
+        $query->orderBy(['name ASC']);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $rows = $stm->fetchAll($pdo::FETCH_OBJ);
+
+        $return = [];
+
+        foreach ($rows as $track) {
+            $return[$track->id] = $track->name;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Gets all vehicles based off platform ID
+     *
+     * @param  $platform integer
+     *
+     * @return array
+     */
+    public function getVehicles($platform)
+    {
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+        $query->cols(['*']);
+        $query->from('vehicles');
+        $query->where('platform = ?', $platform);
+        $query->orderBy(['name ASC']);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $rows = $stm->fetchAll($pdo::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $vehicle) {
+            $id = $vehicle['id'];
+            unset($vehicle['id']);
+            $return[$id] = $vehicle;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Gets all characters based off platform
+     *
+     * @param  integer $platform
+     *
+     * @return array
+     */
+    public function getCharacters($platform)
+    {
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+        $query->cols(['*']);
+        $query->from('characters');
+        $query->where('platform = ?', $platform);
+        $query->orderBy(['name ASC']);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $rows = $stm->fetchAll($pdo::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $character) {
+            $id = $character['id'];
+            unset($character['id']);
+            $return[$id] = $character;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Gets all players
+     *
+     * @todo FILTER by teams
+     *
+     * @return array
+     */
+    public function getPlayers()
+    {
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+        $query->cols(['*']);
+        $query->from('players');
+        $query->orderBy(['name ASC']);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $rows = $stm->fetchAll($pdo::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $player) {
+            $return[$player['id']] = $player;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Gets all platforms for selection
+     *
+     * @return array
+     */
+    public function getPlatforms()
+    {
+        $pdo = $this->getDatabaseDriver();
+        $query = $this->newSelectQuery();
+        $query->cols(['*']);
+        $query->from('platforms');
+        $query->orderBy(['name ASC']);
+
+        $stm = $pdo->prepare($query->getStatement());
+        $stm->execute($query->getBindValues());
+
+        $rows = $stm->fetchAll($pdo::FETCH_ASSOC);
+
+        $return = [];
+
+        foreach ($rows as $platform) {
+            $return[$platform['id']] = $platform;
+        }
+
+        return $return;
+    }
 }

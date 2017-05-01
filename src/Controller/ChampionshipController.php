@@ -21,9 +21,28 @@ class ChampionshipController extends AbstractController
     {
         $response->getBody()->write(
             $this->getTemplateDriver()->render(
-                'championships/new.html'
+                'championships/new.html',
+                [
+                    'characters' => $this->getCharacters(1),
+                    'platforms'  => $this->getPlatforms(),
+                    'players'    => $this->getPlayers(),
+                    'vehicles'   => $this->getVehicles(1)
+                ]
             )
         );
+    }
+
+    /**
+     * Gets the Characters and Vehicles based off platform
+     *
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     *
+     * @return string JSON Encoded response
+     */
+    public function getPlatformMetadata(ServerRequestInterface $request, ResponseInterface $response)
+    {
+
     }
 
     /**
@@ -55,8 +74,9 @@ class ChampionshipController extends AbstractController
         $query = $this->newInsertQuery();
         $query->into('championships');
         $query->cols([
-            'date'  => date('Y-m-d H:i:s'),
-            'valid' => 1
+            'date'     => date('Y-m-d H:i:s'),
+            'valid'    => 1,
+            'platform' => $json->platform
         ]);
 
         $id = $this->executeInsertQuery($query);
@@ -69,7 +89,7 @@ class ChampionshipController extends AbstractController
                 'player'       => $player->player,
                 'championship' => $id,
                 'character'    => $player->character,
-                'vehicle'      => $player->vehicle
+                'vehicle'      => $player->vehicle,
             ]);
 
             $this->executeInsertQuery($query);
@@ -99,7 +119,7 @@ class ChampionshipController extends AbstractController
         $data = $this->getChampionshipData($args['id']);
 
         if ($data['championship']->finished == '0') {
-            $data['tracks'] = $this->getTracks();
+            $data['tracks'] = $this->getTracks($data['championship']['platform']);
         }
 
         $response->getBody()->write(
@@ -233,20 +253,5 @@ class ChampionshipController extends AbstractController
         }
 
         return $data;
-    }
-
-    /**
-     * Gets all tracks and their info
-     *
-     * @return array
-     */
-    public function getTracks()
-    {
-        $select = $this->newSelectQuery();
-        $select->from('tracks')
-               ->cols(['*'])
-               ->orderBy(['name ASC']);
-
-        return $this->executeQuery($select, true);
     }
 }

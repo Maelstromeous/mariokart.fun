@@ -1,6 +1,6 @@
-$('.new-stage select[name="track"]').change(function (event) {
+$('#new-stage select[name="track"]').change(function (event) {
   var val = $(this).val();
-  var parent = $(this).parents('.new-stage');
+  var parent = $(this).parents('#new-stage');
 
   // Update image
   var image = parent.find('img').first();
@@ -18,12 +18,12 @@ $('.new-stage select[name="track"]').change(function (event) {
   }
 });
 
-$('.new-stage .save').click(function (event) {
+$('#new-stage .save').click(function (event) {
   var data = {
     players: [],
   };
   var valid = true;
-  var parent = $(this).parents('.new-stage');
+  var parent = $(this).parents('#new-stage');
 
   // Reset any validation stuff
   parent.find('select').each(function (index, el) {
@@ -48,7 +48,7 @@ $('.new-stage .save').click(function (event) {
     }
   });
 
-  var options = $('.new-stage').find('.positions select');
+  var options = $('#new-stage').find('.positions select');
   console.log(options);
   if (count != positions.length) {
 
@@ -83,8 +83,33 @@ $('.new-stage .save').click(function (event) {
     }
   });
 
+  // If all valid, send the ajax
   if (valid === true) {
     parent.find('#errors').slideUp();
+    $(this).addClass('pulsate');
     $(this).find('i').removeClass('fa-save').addClass('fa-refresh fa-spin');
+
+    var data = {
+      championship: $('#championship').attr('data-id'),
+      track: parent.find('select[name="track"]').val(),
+    };
+
+    console.log(data);
+
+    /*$.ajax({
+      url: baseUrl + currentPath + '/addStage',
+      type: 'POST',
+      dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+      data: data
+    })
+    .done(function() {
+      console.log("success");
+    })
+    .fail(function() {
+      console.log("error");
+    })
+    .always(function() {
+      console.log("complete");
+    });*/
   }
 });

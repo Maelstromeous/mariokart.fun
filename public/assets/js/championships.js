@@ -156,7 +156,6 @@ $('#submit').click(function () {
   });
 });
 
-
 function resetBars(elem) {
   var bars = $(elem).parents('.player-card').find('.progress-bar');
   $(bars).each(function (index, el) {

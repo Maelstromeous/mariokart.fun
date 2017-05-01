@@ -1,3 +1,5 @@
+var platform = $('#championship').attr('data-platform');
+
 $('#new-stage select[name="track"]').change(function (event) {
   var val = $(this).val();
   var parent = $(this).parents('#new-stage');

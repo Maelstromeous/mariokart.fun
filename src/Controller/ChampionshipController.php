@@ -19,14 +19,18 @@ class ChampionshipController extends AbstractController
      */
     public function newChampionship(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $vehicles = $this->getVehicles(1);
         $response->getBody()->write(
             $this->getTemplateDriver()->render(
                 'championships/new.html',
                 [
-                    'characters' => $this->getCharacters(1),
-                    'platforms'  => $this->getPlatforms(),
-                    'players'    => $this->getPlayers(),
-                    'vehicles'   => $this->getVehicles(1)
+                    'characters'   => $this->getCharacters(1),
+                    'platforms'    => $this->getPlatforms(),
+                    'players'      => $this->getPlayers(),
+                    'statbars'     => $this->getStatbars(1),
+                    'statbarsJson' => json_encode($this->getStatbars(1)),
+                    'vehicles'     => $vehicles,
+                    'vehiclesJson' => json_encode($vehicles)
                 ]
             )
         );
@@ -119,7 +123,7 @@ class ChampionshipController extends AbstractController
         $data = $this->getChampionshipData($args['id']);
 
         if ($data['championship']->finished == '0') {
-            $data['tracks'] = $this->getTracks($data['championship']['platform']);
+            $data['tracks'] = $this->getTracks($data['championship']->platform);
         }
 
         $response->getBody()->write(

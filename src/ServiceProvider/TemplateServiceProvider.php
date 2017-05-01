@@ -29,16 +29,6 @@ class TemplateServiceProvider extends AbstractServiceProvider implements Databas
         $config = $this->getContainer()->get('config');
         $version = $config['environment'] === 'production' ? $config ['version'] : date('U');
 
-        $statBars = [
-            'speed'        => ['min' => 25, 'max' => 69],
-            'weight'       => ['min' => 17, 'max' => 67],
-            'acceleration' => ['min' => 16, 'max' => 67],
-            'handling'     => ['min' => 18, 'max' => 67],
-            'drift'        => ['min' => 17, 'max' => 67],
-            'offroad'      => ['min' => 16, 'max' => 73],
-            'miniturbo'    => ['min' => 16, 'max' => 67]
-        ];
-
         $globals = [
             'asset_url'        => $config['base_url'] . '/assets',
             'base_url'         => $config['base_url'],

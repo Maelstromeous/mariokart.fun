@@ -3,8 +3,8 @@
 <div class="col-12 text-center stage-new-select">
     <select name="track">
         <option value="0">Select Track</option>
-{% for track in data.tracks %}
-        <option value="{{ track.id }}">{{ track.name }}</option>
+{% for id, track in data.tracks %}
+        <option value="{{ id }}">{{ track }}</option>
 {% endfor %}
     </select>
 </div>

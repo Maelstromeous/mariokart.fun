@@ -62,7 +62,7 @@
                     </div>
                     <div class="row nomargin stat-bars text-left">
                         <div class="col-12">
-                            {% for bar, limits in statBars %}
+                            {% for bar, limits in statbars %}
                             <div class="row align-items-center">
                                 <div class="col-sm-4 col-lg-5">
                                     {{ bar|title }}
@@ -92,7 +92,7 @@
 {% block scripts %}
 <script>
     var vehicleStats = JSON.parse('{{ vehiclesJson|raw }}');
-    var statBars = JSON.parse('{{ statBarsJson|raw }}');
+    var statbars = JSON.parse('{{ statbarsJson|raw }}');
 </script>
 <script src="{{ asset_url }}/js/championships.js{{ version }}"></script>
 {% endblock %}

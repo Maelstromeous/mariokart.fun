@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 
 {% block body %}
-<main id="championship" data-id="{{ data.championship.id }}">
+<main id="championship" data-id="{{ data.championship.id }}" data-platform="{{ data.championship.platform }}">
     <div class="fluid-container">
         <div class="row nomargin">
             <div class="col-12 text-center" id="top">
@@ -29,7 +29,7 @@
 {% block scripts %}
 <script>
     var vehicleStats = JSON.parse('{{ vehiclesJson|raw }}');
-    var statBars = JSON.parse('{{ statBarsJson|raw }}');
+    var statBars = JSON.parse('{{ statbarsJson|raw }}');
     var stageCount = '{{ data.stages|length }}';
 </script>
 <script src="{{ asset_url }}/js/stages.js{{ version }}"></script>

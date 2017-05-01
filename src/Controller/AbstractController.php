@@ -58,8 +58,7 @@ abstract class AbstractController implements
         $pdo = $this->getDatabaseDriver();
         $query = $this->newSelectQuery();
         $query->cols(['*']);
-        $query->from('vehicles');
-        $query->where('platform = ?', $platform);
+        $query->from("vehicles_{$platform}");
         $query->orderBy(['name ASC']);
 
         $stm = $pdo->prepare($query->getStatement());
@@ -164,5 +163,27 @@ abstract class AbstractController implements
         }
 
         return $return;
+    }
+
+    /**
+     * Gets the statistics bars for various platforms
+     *
+     * @return array
+     */
+    public function getStatbars($platform)
+    {
+        $statbars = [
+            1 => [
+                'speed'        => ['min' => 25, 'max' => 69],
+                'weight'       => ['min' => 17, 'max' => 67],
+                'acceleration' => ['min' => 16, 'max' => 67],
+                'handling'     => ['min' => 18, 'max' => 67],
+                'drift'        => ['min' => 17, 'max' => 67],
+                'offroad'      => ['min' => 16, 'max' => 73],
+                'miniturbo'    => ['min' => 16, 'max' => 67]
+            ]
+        ];
+
+        return $statbars[$platform];
     }
 }

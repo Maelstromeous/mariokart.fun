@@ -53,10 +53,8 @@ $('select[name^="character-"]').change(function () {
 
   // Pull in image
   var image = $(this).parents('.player-card').find('img.character').first();
-  var platform = $('#platform').find(':selected').val();
   if (val > 0) {
-    image.attr('src', assetUrl + '/img/characters/platform-' + platform + '/' +
-      val + '.jpg' + version);
+    image.attr('src', assetUrl + '/img/characters/' + val + '.jpg' + version);
   } else {
     image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png' + version);
   }
@@ -72,10 +70,8 @@ $('select[name^="vehicle-"]').change(function () {
   $(this).css('background-color', '');
 
   var image = $(this).parents('.player-card').find('img.vehicle').first();
-  var platform = $('#platform').find(':selected').val();
   if (val > 0) {
-    image.attr('src', assetUrl + '/img/vehicles/platform-' + platform + '/' +
-      val + '.jpg' + version);
+    image.attr('src', assetUrl + '/img/vehicles/' + val + '.jpg' + version);
   } else {
     image.attr('src', assetUrl + '/img/GoldenMushie-Faded.png' + version);
   }
@@ -91,12 +87,12 @@ $('#submit').click(function () {
   $('#form-errors').html('').hide();
   var data = {
     players: [],
+    platform: $('#platform').find(':selected').val(),
   };
   var valid = true;
 
   // Check for valid data and populate params if so
   $('.player-card').each(function (index, el) {
-    console.log(el);
     var id = $(el).attr('data-id');
     var character = $(el).find('select[name^="character-"]').val();
     var vehicle = $(el).find('select[name^="vehicle-"]').val();

@@ -37,19 +37,6 @@ class ChampionshipController extends AbstractController
     }
 
     /**
-     * Gets the Characters and Vehicles based off platform
-     *
-     * @param  ServerRequestInterface $request  [description]
-     * @param  ResponseInterface      $response [description]
-     *
-     * @return string JSON Encoded response
-     */
-    public function getPlatformMetadata(ServerRequestInterface $request, ResponseInterface $response)
-    {
-
-    }
-
-    /**
      * AJAX Request which creates a new championship
      *
      * @param  Psr\Http\Message\ServerRequestInterface $request
@@ -62,7 +49,6 @@ class ChampionshipController extends AbstractController
         $json = json_decode($request->getBody()->getContents());
 
         // Validate that we have the info we need first
-
         try {
             $this->validateChampionshipPOST($json);
         } catch (InvalidDataException $e) {
@@ -324,10 +310,33 @@ class ChampionshipController extends AbstractController
                ->where('valid = ?', '1');
 
         $data['championship'] = $this->executeQuery($select);
+        $data['championship']->tracksAssigned = [];
+
+        // Get points system for platform so we can use to calculate player points later
+        $data['points']     = $this->getPoints($data['championship']->platform);
 
         // @todo: Present this more nicely
         if (! $data['championship']) {
             die('Championship couldn\'t be found :\'(');
+        }
+
+        // Get the player and vehicle information
+        $select = $this->newSelectQuery();
+        $select->from('championships_players_vehicles AS cpv')
+               ->cols(['cpv.*', 'p.name AS playerName'])
+               ->join(
+                    'INNER',
+                    'players AS p',
+                    'cpv.player = p.id'
+                )
+                ->where('cpv.championship = ?', $id)
+                ->orderBy(['playerName ASC']);
+
+        $result = $this->executeQuery($select, true);
+
+        // Sort players by their ID
+        foreach ($result as $player) {
+            $data['players'][$player->player] = $player;
         }
 
         // Get stages & track info
@@ -354,6 +363,7 @@ class ChampionshipController extends AbstractController
             $ids = [];
             foreach ($data['stages'] as $stage) {
                 $ids[] = $stage->id;
+                $data['championship']->tracksAssigned[] = $stage->track;
             }
 
             $in = '';
@@ -382,31 +392,23 @@ class ChampionshipController extends AbstractController
                 } else {
                     $row->positions = null;
                 }
+
+                // Figure out player points
+                foreach ($row->positions as $position) {
+                    $playerPoints = $data['players'][$position->player];
+
+                    if (! isset($playerPoints->points)) {
+                        $playerPoints->points = 0;
+                    }
+                    $points = $data['points'][$position->position];
+                    $current = $playerPoints->points;
+                    $data['players'][$position->player]->points = $current + $points;
+                }
             }
-        }
-
-        // Get the player and vehicle information
-        $select = $this->newSelectQuery();
-        $select->from('championships_players_vehicles AS cpv')
-               ->cols(['cpv.*', 'p.name AS playerName'])
-               ->join(
-                    'INNER',
-                    'players AS p',
-                    'cpv.player = p.id'
-                )
-                ->where('cpv.championship = ?', $id)
-                ->orderBy(['playerName ASC']);
-
-        $result = $this->executeQuery($select, true);
-
-        // Sort players by their ID
-        foreach ($result as $player) {
-            $data['players'][$player->player] = $player;
         }
 
         // Get platform specific information
         $data['characters'] = $this->getCharacters($data['championship']->platform);
-        $data['points']     = $this->getPoints($data['championship']->platform);
         $data['tracks']     = $this->getTracks($data['championship']->platform);
         $data['vehicles']   = $this->getVehicles($data['championship']->platform);
 

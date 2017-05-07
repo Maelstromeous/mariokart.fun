@@ -173,6 +173,54 @@ class ChampionshipController extends AbstractController
     }
 
     /**
+     * Marks a championship as complete
+     *
+     * @param  ServerRequestInterface $request
+     * @param  ResponseInterface      $response
+     * @param  array                  $args
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     */
+    public function finalizeChampionship(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args
+    ) {
+        $json = json_decode($request->getBody()->getContents());
+
+        $select = $this->newSelectQuery();
+        $select->from('championships')
+               ->cols(['*'])
+               ->where('id = ?', $json->championship)
+               ->where('valid = ?', 1);
+        $championship = $this->executeQuery($select);
+
+        if ($championship->finished == 1) {
+            $response->getBody()->write(
+                json_encode(['error' => 'Champship already marked as completed'])
+            );
+            return $response->withStatus(400);
+        }
+
+        $update = $this->newUpdateQuery();
+        $update->table('championships')
+               ->set('finished', 1)
+               ->where('id = ?', $json->championship);
+        $result = $this->executeQueryOnly($update);
+
+        if ($result) {
+            $response->getBody()->write(
+                json_encode(['success' => true])
+            );
+        } else {
+            $response->getBody()->write(
+                json_encode(['error' => 'Was unable to update championship status'])
+            );
+            return $response->withStatus(400);
+        }
+    }
+
+    /**
      * Validates the POST request for creating a new championship
      *
      * @param  stdClass $json
@@ -337,6 +385,7 @@ class ChampionshipController extends AbstractController
         // Sort players by their ID
         foreach ($result as $player) {
             $data['players'][$player->player] = $player;
+            $data['players'][$player->player]->points = 0;
         }
 
         // Get stages & track info
@@ -395,14 +444,9 @@ class ChampionshipController extends AbstractController
 
                 // Figure out player points
                 foreach ($row->positions as $position) {
-                    $playerPoints = $data['players'][$position->player];
-
-                    if (! isset($playerPoints->points)) {
-                        $playerPoints->points = 0;
-                    }
+                    $current = $data['players'][$position->player]->points;
                     $points = $data['points'][$position->position];
-                    $current = $playerPoints->points;
-                    $data['players'][$position->player]->points = $current + $points;
+                    $current = $current + $points;
                 }
             }
         }

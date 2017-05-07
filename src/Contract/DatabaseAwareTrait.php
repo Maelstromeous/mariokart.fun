@@ -135,4 +135,18 @@ trait DatabaseAwareTrait
 
         return $pdo->lastInsertId($query->getLastInsertIdName($key));
     }
+
+    /**
+     * Special Update query function that returns the ID of the last entry
+     *
+     * @param  QueryInterface $query
+     *
+     * @return int
+     */
+    public function executeQueryOnly(QueryInterface $query)
+    {
+        $pdo = $this->getDatabaseDriver();
+        $stm = $pdo->prepare($query->getStatement());
+        return $stm->execute($query->getBindValues());
+    }
 }

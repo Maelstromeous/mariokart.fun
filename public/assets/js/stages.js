@@ -1,24 +1,60 @@
 var platform = $('#championship').attr('data-platform');
 
 $('#in-progress').hover(function () {
-  $(this).html('Finish? <i class="fa fa-check">');
+  $(this).html('Finished?');
   $(this).removeClass('pulsate btn-warning');
   $(this).addClass('btn-success');
 }, function () {
 
-  $(this).html('In progress <i class="fa fa-spinner fa-spin">');
+  $(this).html('In progress <i class="fa fa-spinner fa-spin"></i>');
   $(this).removeClass('btn-success');
   $(this).addClass('pulsate btn-warning');
 });
 
 $('#in-progress').click(function (event) {
-  /* Act on the event */
+  var data = {
+    championship: $('#championship').attr('data-id'),
+  };
+  var button = $(this);
+
+  $.ajax({
+    url: baseUrl + currentPath + '/finalize',
+    type: 'POST',
+    dataType: 'JSON',
+    data: JSON.stringify(data),
+    timeout: 5000,
+  })
+  .done(function (returned) {
+    console.log('done');
+    console.log(returned);
+    if (!returned.success || returned.success !== 'success') {
+      alert('Unexpected response from server.... contact the developer!');
+    }
+
+    $(button).removeClass('pulsate btn-danger btn-warning').addClass('btn-success');
+    $(button).find('i').removeClass('fa-refresh fa-spin').addClass('fa-check');
+    $(button).html('Finished! <i class="fa fa-check"></i>');
+
+    // TEMPORORY: Reload the page so the new stage can be applied
+    // @todo: Make dynamic by updating points table, adding in a new stage etc
+    window.location.reload();
+  })
+  .fail(function (xhr, textStatus, error) {
+    var message = xhr.responseJSON;
+    if (message && message.error) {
+      alert(message.error);
+    } else {
+      alert("Unknown server error occured! :'(");
+    }
+
+    $(button).find('i').removeClass('fa-refresh fa-spin').addClass('fa-exclamation-triangle');
+    $(button).removeClass('pulsate').addClass('btn-danger');
+  });
 });
 
 $('#new-stage select[name="track"]').change(function (event) {
   var val = $(this).val();
   var parent = $(this).parents('#new-stage');
-  var $button = $(this);
 
   // Update image
   var image = parent.find('img').first();

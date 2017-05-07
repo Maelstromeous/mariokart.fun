@@ -10,7 +10,7 @@
                 <h1>Championship #{{ data.championship.id }}</h1>
                 <h3>{{ data.championship.date|date('d/m/Y H:i') }}</h3>
         {% if data.championship.finished == 1 %}
-                <button class="btn btn-success">Finished</button>
+                <button class="btn btn-success">Finished <i class="fa fa-check"></i></button>
         {% else %}
                 <button class="btn btn-warning pulsate" id="in-progress">
                     In progress <i class="fa fa-spinner fa-spin"></i>
@@ -32,8 +32,6 @@
 
 {% block scripts %}
 <script>
-    var vehicleStats = JSON.parse('{{ vehiclesJson|raw }}');
-    var statBars = JSON.parse('{{ statbarsJson|raw }}');
     var stageCount = '{{ data.stages|length }}';
 </script>
 <script src="{{ asset_url }}/js/stages.js{{ version }}"></script>

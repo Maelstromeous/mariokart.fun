@@ -2,14 +2,11 @@
 <p>
     Showing standings between {{ 'now'|date('01/m/Y')}} and {{ 'now'|date('t/m/Y')}}
 </p>
-<table class="table table-striped">
+<table class="table table-striped table-responsive">
     <thead>
         <tr>
             <th>
                 Name
-            </th>
-            <th>
-                Normal Character
             </th>
             <th>
                 Championships
@@ -33,9 +30,6 @@
         <tr {% if player.hex %}style="background-color: {{ player.hex }}"{% endif %}>
             <td>
                 {{ player.player }}
-            </td>
-            <td>
-                {{ characters[player.defaultchar].name }}
             </td>
             <td>
                 {{ player.championships }}

@@ -27,7 +27,7 @@ $('#in-progress').click(function (event) {
   .done(function (returned) {
     console.log('done');
     console.log(returned);
-    if (!returned.success || returned.success !== 'success') {
+    if (!returned.success || returned.success !== true) {
       alert('Unexpected response from server.... contact the developer!');
     }
 
@@ -171,7 +171,7 @@ $('#new-stage .save').click(function (event) {
     .done(function (returned) {
       console.log('done');
       console.log(returned);
-      if (!returned.success || returned.success !== 'success') {
+      if (!returned.success || returned.success !== true) {
         parent.find('#errors').html('Unexpected response from server.... contact the developer!');
         parent.find('#errors').html(returned.error);
       }

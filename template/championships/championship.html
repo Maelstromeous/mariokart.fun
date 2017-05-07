@@ -24,7 +24,9 @@
         <hr class="half">
         <div class="row justify-content-center" id="stages">
             {% include 'championships/partials/stage.html' %}
+        {% if data.championship.finished == 0 %}
             {% include 'championships/partials/new-stage.html' %}
+        {% endif %}
         </div>
     </div>
 </main>

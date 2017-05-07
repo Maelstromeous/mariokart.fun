@@ -202,9 +202,21 @@ class ChampionshipController extends AbstractController
             return $response->withStatus(400);
         }
 
+        $data = $this->getChampionshipData($championship->id);
+
+        // Order players by points and pick the top to claim as champion
+        usort($data['players'], [$this, 'playerPointSort']);
+
+        // Check if a hung championship
+        $champion = null;
+        if ($data['players'][0]->points !== $data['players'][1]->points) {
+            $champion = $data['players'][0]->player;
+        }
+
         $update = $this->newUpdateQuery();
         $update->table('championships')
                ->set('finished', 1)
+               ->set('champion', $champion)
                ->where('id = ?', $json->championship);
         $result = $this->executeQueryOnly($update);
 
@@ -218,6 +230,18 @@ class ChampionshipController extends AbstractController
             );
             return $response->withStatus(400);
         }
+    }
+
+    public function playerPointSort($a, $b)
+    {
+        if ($a->points < $b->points) {
+            return 1;
+        }
+        if ($a->points > $b->points) {
+            return -1;
+        }
+
+        return 0;
     }
 
     /**
@@ -361,7 +385,7 @@ class ChampionshipController extends AbstractController
         $data['championship']->tracksAssigned = [];
 
         // Get points system for platform so we can use to calculate player points later
-        $data['points']     = $this->getPoints($data['championship']->platform);
+        $data['points'] = $this->getPoints($data['championship']->platform);
 
         // @todo: Present this more nicely
         if (! $data['championship']) {
@@ -446,7 +470,7 @@ class ChampionshipController extends AbstractController
                 foreach ($row->positions as $position) {
                     $current = $data['players'][$position->player]->points;
                     $points = $data['points'][$position->position];
-                    $current = $current + $points;
+                    $data['players'][$position->player]->points = $current + $points;
                 }
             }
         }

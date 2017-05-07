@@ -149,7 +149,7 @@ abstract class AbstractController implements
         $query = $this->newSelectQuery();
         $query->cols(['*']);
         $query->from('platforms');
-        $query->orderBy(['name ASC']);
+        $query->orderBy(['id ASC']);
 
         $stm = $pdo->prepare($query->getStatement());
         $stm->execute($query->getBindValues());
@@ -185,5 +185,41 @@ abstract class AbstractController implements
         ];
 
         return $statbars[$platform];
+    }
+
+    public function getPoints($platform)
+    {
+        $points = [
+            1 => [
+                1  => 15,
+                2  => 12,
+                3  => 10,
+                4  => 8,
+                5  => 7,
+                6  => 6,
+                7  => 5,
+                8  => 4,
+                9  => 3,
+                10 => 2,
+                11 => 1,
+                12 => 0
+            ],
+            2 => [
+                1  => 15,
+                2  => 12,
+                3  => 10,
+                4  => 9,
+                5  => 8,
+                6  => 7,
+                7  => 6,
+                8  => 5,
+                9  => 4,
+                10 => 3,
+                11 => 2,
+                12 => 1
+            ]
+        ];
+
+        return $points[$platform];
     }
 }

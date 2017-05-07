@@ -65,7 +65,7 @@ class MainController extends AbstractController
                         ANY_VALUE(ch.wins) AS `champ_wins`
                     FROM championships AS c
                     INNER JOIN stages AS s ON c.id = s.championship
-                    INNER JOIN stage_positions AS sp ON s.id = sp.stage
+                    INNER JOIN stages_positions AS sp ON s.id = sp.stage
                     INNER JOIN players AS p ON sp.player = p.id
                     LEFT JOIN
                     (
@@ -95,7 +95,7 @@ class MainController extends AbstractController
                     SELECT
                         COUNT(DISTINCT(p.id)) AS `count`
                     FROM players AS p
-                    INNER JOIN stage_positions AS sp ON sp.player = p.id
+                    INNER JOIN stages_positions AS sp ON sp.player = p.id
                 ) AS `total_players`
                 GROUP BY dt.player, dt.defaultchar
                 ORDER BY champ_win_perc DESC, stage_win_perc DESC, champ_wins DESC";

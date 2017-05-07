@@ -144,6 +144,7 @@ $('#submit').click(function () {
     type: 'POST',
     dataType: 'json',
     data: JSON.stringify(data),
+    timeout: 5000,
   })
   .done(function (returned) {
     $('#submit i').removeClass('fa-refresh fa-spin').addClass('fa-check');

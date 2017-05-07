@@ -1,26 +1,30 @@
 {% extends 'index.html' %}
 
+{% block title %}Championship #{{ data.championship.id }}{% endblock %}
+
 {% block body %}
 <main id="championship" data-id="{{ data.championship.id }}" data-platform="{{ data.championship.platform }}">
     <div class="fluid-container">
-        <div class="row nomargin">
-            <div class="col-12 text-center" id="top">
+        <div class="row nomargin justify-content-center align-items-center">
+            <div class="col-xs-12 col-sm-4 text-center" id="top">
                 <h1>Championship #{{ data.championship.id }}</h1>
                 <h3>{{ data.championship.date|date('d/m/Y H:i') }}</h3>
         {% if data.championship.finished == 1 %}
                 <button class="btn btn-success">Finished</button>
         {% else %}
-                <button class="btn btn-info">In Progress</button>
+                <button class="btn btn-warning pulsate" id="in-progress">
+                    In progress <i class="fa fa-spinner fa-spin"></i>
+                </button>
         {% endif %}
             </div>
-        </div>
-        <div class="row justify-content-center" id="stages">
-        {% for stage in data.stages %}
-                {% include 'championships/partials/stage.html' %}
-        {% endfor %}
-            <div class="col-sm-12 col-md-6 col-lg-3 stage" id="new-stage">
-                {% include 'championships/partials/new-stage.html' %}
+            <div class="col-xs-12 col-sm-4 col-md-4 text-center" id="table">
+                {% include 'championships/partials/stage-player-info.html' %}
             </div>
+        </div>
+        <hr class="half">
+        <div class="row justify-content-center" id="stages">
+            {% include 'championships/partials/stage.html' %}
+            {% include 'championships/partials/new-stage.html' %}
         </div>
     </div>
 </main>

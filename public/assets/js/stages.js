@@ -1,8 +1,20 @@
 var platform = $('#championship').attr('data-platform');
 
+$('#in-progress').hover(function () {
+  $(this).html('Finish? <i class="fa fa-check">');
+  $(this).removeClass('pulsate btn-warning');
+  $(this).addClass('btn-success');
+}, function () {
+
+  $(this).html('In progress <i class="fa fa-spinner fa-spin">');
+  $(this).removeClass('btn-success');
+  $(this).addClass('pulsate btn-warning');
+});
+
 $('#new-stage select[name="track"]').change(function (event) {
   var val = $(this).val();
   var parent = $(this).parents('#new-stage');
+  var $button = $(this);
 
   // Update image
   var image = parent.find('img').first();
@@ -26,6 +38,7 @@ $('#new-stage .save').click(function (event) {
   };
   var valid = true;
   var parent = $(this).parents('#new-stage');
+  var button = $(this);
 
   // Reset any validation stuff
   parent.find('select').each(function (index, el) {
@@ -50,11 +63,10 @@ $('#new-stage .save').click(function (event) {
     }
   });
 
-  var options = $('#new-stage').find('.positions select');
-  console.log(options);
+  var positions = $('#new-stage').find('.positions select');
+  console.log(positions);
   if (count != positions.length) {
-
-    $(options).each(function (index, el) {
+    $(positions).each(function (index, el) {
       if ($(el).val() == '0') {
         $(el).css('background-color', '#ff8585');
       }
@@ -69,7 +81,7 @@ $('#new-stage .save').click(function (event) {
   // Check to make sure we're not assigning the same position to more than 1 player
   var assigned = [];
   var occurances = [];
-  $(options).each(function (index, el) {
+  $(positions).each(function (index, el) {
     assigned.push($(this).val());
   });
 
@@ -85,33 +97,60 @@ $('#new-stage .save').click(function (event) {
     }
   });
 
+  console.log(valid);
+
   // If all valid, send the ajax
   if (valid === true) {
     parent.find('#errors').slideUp();
     $(this).addClass('pulsate');
-    $(this).find('i').removeClass('fa-save').addClass('fa-refresh fa-spin');
+    $(this).removeClass('btn-danger btn-success');
+    $(this).find('i').removeClass('fa-exclamation-triangle fa-save').addClass('fa-refresh fa-spin');
 
     var data = {
       championship: $('#championship').attr('data-id'),
       track: parent.find('select[name="track"]').val(),
     };
 
-    console.log(data);
+    // Populate the player data
+    data.players = [];
 
-    /*$.ajax({
-      url: baseUrl + currentPath + '/addStage',
+    $(positions).each(function (index, el) {
+      data.players.push({
+        id: $(el).parents('tr').first().attr('player-id'),
+        pos: $(el).val(),
+      });
+    });
+
+    $.ajax({
+      url: baseUrl + currentPath + '/new-stage',
       type: 'POST',
-      dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
-      data: data
+      dataType: 'JSON',
+      data: JSON.stringify(data),
+      timeout: 5000,
     })
-    .done(function() {
-      console.log("success");
+    .done(function (returned) {
+      console.log('done');
+      console.log(returned);
+      if (!returned.success || returned.success !== 'success') {
+        parent.find('#errors').html('Unexpected response from server.... contact the developer!');
+        parent.find('#errors').html(message.error);
+      }
+
+      $(button).removeClass('pulsate btn-danger btn-warning').addClass('btn-success');
+      $(button).find('i').removeClass('fa-refresh fa-spin').addClass('fa-check');
     })
-    .fail(function() {
-      console.log("error");
-    })
-    .always(function() {
-      console.log("complete");
-    });*/
+    .fail(function (xhr, textStatus, error) {
+      var message = xhr.responseJSON;
+      if (message && message.error) {
+        parent.find('#errors').html(message.error);
+      } else {
+        parent.find('#errors').html("Unknown server error occured! :'(");
+      }
+
+      parent.find('#errors').slideDown();
+
+      $(button).find('i').removeClass('fa-refresh fa-spin').addClass('fa-exclamation-triangle');
+      $(button).removeClass('pulsate').addClass('btn-danger');
+    });
   }
 });

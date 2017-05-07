@@ -1,52 +1,40 @@
-<img class="img-fluid" src="{{ asset_url }}/img/tracks/new.jpg">
-<h3 class="header text-center">New Stage<span class="stage-no"></span><span class="stage-name"></span></h3>
-<div class="col-12 text-center stage-new-select">
-    <select name="track">
-        <option value="0">Select Track</option>
-{% for id, track in data.tracks %}
-        <option value="{{ id }}">{{ track }}</option>
-{% endfor %}
-    </select>
-</div>
-<div class="positions row nomargin">
-    <table class="table table-striped table-sm">
-        <tr>
-            <th>
-                Player
-            </th>
-            <th>
-                Pos
-            </th>
-            <th>
-                Character
-            </th>
-            <th>
-                Vehicle
-            </th>
-        </tr>
-{% for i, player in data.players %}
-        <tr player-id="{{ player.player }}" class="text-center">
-            <td>
-                {{ player.playerName }}
-            </td>
-            <td>
-                <select name="player-pos-{{ i }}">
-                    <option value="0">-</option>
-{% for o in 1..12 %}
-                    <option value="{{ o }}">{{ o }}</option>
-{% endfor %}
-                </select>
-            </td>
-            <td>
-                {{ characters[player.character].name }}
-            </td>
-            <td>
-                {{ vehicles[player.vehicle].name }}
-            </td>
-        </div>
-{% endfor %}
-    </table>
-<div id="errors" class="alert alert-warning col-12"></div>
+<div class="col-sm-12 col-md-6 col-lg-3 stage" id="new-stage">
+    <img class="img-fluid" src="{{ asset_url }}/img/tracks/new.jpg">
+    <div class="col-12 text-center stage-new-select">
+        <select name="track">
+            <option value="0">Select Track</option>
+    {% for id, track in data.tracks %}
+            <option value="{{ id }}">{{ track }}</option>
+    {% endfor %}
+        </select>
+    </div>
+    <div class="positions row nomargin">
+        <table class="table table-striped table-sm">
+            <tr>
+                <th>
+                    Player
+                </th>
+                <th>
+                    Pos
+                </th>
+            </tr>
+    {% for i, player in data.players %}
+            <tr player-id="{{ player.player }}" class="text-center">
+                <td>
+                    {{ player.playerName }}
+                </td>
+                <td>
+                    <select name="player-pos-{{ i }}">
+                        <option value="0">-</option>
+    {% for o in 1..12 %}
+                        <option value="{{ o }}">{{ o }}</option>
+    {% endfor %}
+                    </select>
+                </td>
+            </div>
+    {% endfor %}
+        </table>
+    <div id="errors" class="alert alert-warning col-12"></div>
     <div class="text-center col-12">
         <button class="btn btn-success btn-lg save">
             <i class="fa fa-save"></i> Save

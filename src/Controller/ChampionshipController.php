@@ -122,10 +122,6 @@ class ChampionshipController extends AbstractController
         // Grab championship details
         $data = $this->getChampionshipData($args['id']);
 
-        if ($data['championship']->finished == '0') {
-            $data['tracks'] = $this->getTracks($data['championship']->platform);
-        }
-
         $response->getBody()->write(
             $this->getTemplateDriver()->render(
                 'championships/championship.html', [
@@ -136,9 +132,64 @@ class ChampionshipController extends AbstractController
     }
 
     /**
+     * Adds new stage to a championship
+     *
+     * @param  ServerRequestInterface $request
+     * @param  ResponseInterface      $response
+     * @param  array                  $args
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     */
+    public function commitNewStage(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args
+    ) {
+        $json = json_decode($request->getBody()->getContents());
+
+        // Validate that we have the info we need first
+        try {
+            $this->validateStagePOST($json, $args);
+        } catch (InvalidDataException $e) {
+            $response->getBody()->write(
+                json_encode(['error' => $e->getMessage()])
+            );
+            return $response->withStatus(400);
+        }
+
+        // Valid
+        // Create new stage
+        $query = $this->newInsertQuery();
+        $query->into('stages');
+        $query->cols([
+            'championship' => $json->championship,
+            'track'        => $json->track
+        ]);
+
+        $id = $this->executeInsertQuery($query);
+
+        // Add the players positions to the stage
+        foreach ($json->players as $player) {
+            $query = $this->newInsertQuery();
+            $query->into('stages_positions');
+            $query->cols([
+                'stage'    => $id,
+                'player'   => $player->id,
+                'position' => $player->pos
+            ]);
+
+            $this->executeInsertQuery($query);
+        }
+
+        $response->getBody()->write(
+            json_encode(['success' => true])
+        );
+    }
+
+    /**
      * Validates the POST request for creating a new championship
      *
-     * @param  string $json
+     * @param  stdClass $json
      *
      * @return void
      * @throws Maelstromeous\Mariokart\Exception\InvalidDataException
@@ -156,6 +207,100 @@ class ChampionshipController extends AbstractController
 
             if (empty($player->player)) {
                 throw new InvalidDataException('Missing Player ID');
+            }
+        }
+    }
+
+    /**
+     * Validates the POST request for creating a new stage
+     *
+     * @param  stdClass $json
+     * @param  array    $args
+     *
+     * @return void
+     * @throws Maelstromeous\Mariokart\Exception\InvalidDataException
+     */
+    private function validateStagePOST($json, array $args)
+    {
+        if (empty($json->championship)) {
+            throw new InvalidDataException('Missing Championship ID');
+        }
+
+        if ($json->championship != $args['id']) {
+            throw new InvalidDataException('POST championionship ID doesn\'t match route');
+        }
+
+        if (empty($json->track)) {
+            throw new InvalidDataException('Missing Track ID');
+        }
+
+        foreach ($json->players as $player) {
+            if (empty($player->id)) {
+                throw new InvalidDataException('Missing Player ID');
+            }
+
+            if (empty($player->pos)) {
+                throw new InvalidDataException('Missing Player Position');
+            }
+        }
+
+        // Check if championship is still in progress
+        $select = $this->newSelectQuery();
+        $select->from('championships')
+               ->cols(['*'])
+               ->where('id = ?', $json->championship)
+               ->where('valid = ?', 1);
+        $championship = $this->executeQuery($select);
+
+        if (! $championship) {
+            throw new InvalidDataException('Championship couldn\'t be found!');
+        }
+
+        if ($championship->finished == 1) {
+            throw new InvalidDataException('Championship is finished and can\'t be edited further');
+        }
+
+        // Validate the supplied track for the platform
+        $select = $this->newSelectQuery();
+        $select->from('tracks')
+               ->cols(['*'])
+               ->where('id = ?', $json->track)
+               ->where('platform = ?', $championship->platform);
+        $track = $this->executeQuery($select);
+
+        if (! $track) {
+            throw new InvalidDataException('Track couldn\'t be found!');
+        }
+
+        // Validate we don't already have the same track in the championship
+        $select = $this->newSelectQuery();
+        $select->from('stages')
+               ->cols(['*'])
+               ->where('championship = ?', $json->championship)
+               ->where('track = ?', $json->track);
+        $track = $this->executeQuery($select);
+
+        if ($track) {
+            throw new InvalidDataException("Duplicate track #{$json->track} detected for championship");
+        }
+
+        // Validate players exist in the championship
+        $select = $this->newSelectQuery();
+        $select->from('championships_players_vehicles')
+               ->cols(['*'])
+               ->where('championship = ?', $json->championship);
+        $players = $this->executeQuery($select, true);
+
+        $assigned = [];
+        foreach ($json->players as $player) {
+            $found = false;
+            foreach ($players as $row) {
+                if ($row->player === $player->id) {
+                    $found = true;
+                }
+            }
+            if ($found === false) {
+                throw new InvalidDataException("Player {$player->id} was not found in the championship!");
             }
         }
     }
@@ -202,7 +347,9 @@ class ChampionshipController extends AbstractController
 
         // For each stage, pull in positions if applicable
         if (count($data['stages']) > 0) {
+            // Reset to 1 indexed rather than 0
             $data['stages'] = array_combine(range(1, count($data['stages'])), array_values($data['stages']));
+
             // Get stage IDs
             $ids = [];
             foreach ($data['stages'] as $stage) {
@@ -216,7 +363,7 @@ class ChampionshipController extends AbstractController
             $in = rtrim($in, ',');
 
             $select = $this->newSelectQuery();
-            $select->from('stage_positions')
+            $select->from('stages_positions')
                    ->cols(['*'])
                    ->where("stage IN ($in)");
 
@@ -230,8 +377,8 @@ class ChampionshipController extends AbstractController
 
             // Attach the positions to each stage (saves doing multiple queries)
             foreach ($data['stages'] as $stage => $row) {
-                if (count($sortedPositions[$stage])) {
-                    $row->positions = $sortedPositions[$stage];
+                if (count($sortedPositions[$row->id])) {
+                    $row->positions = $sortedPositions[$row->id];
                 } else {
                     $row->positions = null;
                 }
@@ -247,7 +394,8 @@ class ChampionshipController extends AbstractController
                     'players AS p',
                     'cpv.player = p.id'
                 )
-                ->where('cpv.championship = ?', $id);
+                ->where('cpv.championship = ?', $id)
+                ->orderBy(['playerName ASC']);
 
         $result = $this->executeQuery($select, true);
 
@@ -255,6 +403,12 @@ class ChampionshipController extends AbstractController
         foreach ($result as $player) {
             $data['players'][$player->player] = $player;
         }
+
+        // Get platform specific information
+        $data['characters'] = $this->getCharacters($data['championship']->platform);
+        $data['points']     = $this->getPoints($data['championship']->platform);
+        $data['tracks']     = $this->getTracks($data['championship']->platform);
+        $data['vehicles']   = $this->getVehicles($data['championship']->platform);
 
         return $data;
     }

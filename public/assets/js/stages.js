@@ -11,6 +11,10 @@ $('#in-progress').hover(function () {
   $(this).addClass('pulsate btn-warning');
 });
 
+$('#in-progress').click(function (event) {
+  /* Act on the event */
+});
+
 $('#new-stage select[name="track"]').change(function (event) {
   var val = $(this).val();
   var parent = $(this).parents('#new-stage');
@@ -133,11 +137,15 @@ $('#new-stage .save').click(function (event) {
       console.log(returned);
       if (!returned.success || returned.success !== 'success') {
         parent.find('#errors').html('Unexpected response from server.... contact the developer!');
-        parent.find('#errors').html(message.error);
+        parent.find('#errors').html(returned.error);
       }
 
       $(button).removeClass('pulsate btn-danger btn-warning').addClass('btn-success');
       $(button).find('i').removeClass('fa-refresh fa-spin').addClass('fa-check');
+
+      // TEMPORORY: Reload the page so the new stage can be applied
+      // @todo: Make dynamic by updating points table, adding in a new stage etc
+      window.location.reload();
     })
     .fail(function (xhr, textStatus, error) {
       var message = xhr.responseJSON;

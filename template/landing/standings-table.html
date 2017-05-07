@@ -15,10 +15,13 @@
                 Championships
             </th>
             <th>
-                Won Championships
+                Stages
             </th>
             <th>
-                Won Stages
+                Championships Won
+            </th>
+            <th>
+                Stages Won
             </th>
             <th>
                 Qualifies?
@@ -38,11 +41,14 @@
                 {{ player.championships }}
             </td>
             <td>
+                {{ player.stages }}
+            </td>
+            <td>
         {% if player.champ_wins is empty %}
                 0
         {% else %}
             {% set percentage = (player.champ_wins / player.championships) * 100 %}
-                {{ player.stage_wins }}
+                {{ player.champ_wins }}
                 ({{ percentage|number_format(0) }}%)
         {% endif %}
             </td>

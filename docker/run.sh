@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /usr/share/nginx/html
+cd /var/www/html
 php vendor/robmorgan/phinx/bin/phinx migrate

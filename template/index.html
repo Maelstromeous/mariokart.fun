@@ -18,7 +18,7 @@
         <meta property="description" content="{{ description }}">
         <meta property="og:description" content="{{ description }}">
         <meta property="og:type" content="website">
-        <link rel="icon" href="{{ asset_url }}/img/favicon.ico{{ version }}">
+        {% include 'common/meta.html' %}
         {% block meta %}{% endblock %}
 
         <!-- Bootstrap -->

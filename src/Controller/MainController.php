@@ -50,18 +50,24 @@ class MainController extends AbstractController
                     SUM(dt.stage_wins / dt.stages) AS `stage_win_perc`,
                     ANY_VALUE
                     (
-                        # If player hasn't played more than the total championships / total players - 10% then they're disqualified
-                        CASE WHEN dt.championships > ((total_champs.count / total_players.count) * 0.9) THEN '1' ELSE '0' END
+                        CASE WHEN dt.championships > ((total_champs.count / total_players.count) * 1) THEN '1' ELSE '0' END
                     ) AS `qualifies`,
-                    ANY_VALUE((total_champs.count / total_players.count) * 0.9) AS `qualification_limit`
+                    ANY_VALUE((total_champs.count / total_players.count) * 1) AS `qualification_limit`,
+                    ANY_VALUE(total_champs.count) AS total_champs,
+                    ANY_VALUE(total_players.count) AS total_players
                 FROM
                 (
                     SELECT
                         p.name AS `player`,
                         p.defaultchar,
-                        COUNT(DISTINCT(c.id)) AS championships,
-                        COUNT(DISTINCT(sp.stage)) AS stages,
-                        SUM(CASE WHEN sp.position = 1 THEN '1' ELSE '0' END) AS stage_wins,
+                        COUNT(DISTINCT (c.id)) AS championships,
+                        COUNT(DISTINCT (sp.stage)) AS stages,
+                        SUM(
+                            CASE
+                                WHEN sp.position = 1 THEN '1'
+                                ELSE '0'
+                            END
+                        ) AS stage_wins,
                         ANY_VALUE(ch.wins) AS `champ_wins`
                     FROM championships AS c
                     INNER JOIN stages AS s ON c.id = s.championship
@@ -70,12 +76,12 @@ class MainController extends AbstractController
                     LEFT JOIN
                     (
                         SELECT
-                            COUNT(DISTINCT(id)) AS `wins`,
+                            COUNT(id) AS `wins`,
                             champion
                         FROM championships AS c
                         WHERE c.valid = 1
                         AND c.finished = 1
-                        GROUP BY id
+                        GROUP BY champion
                     ) AS ch ON ch.champion = p.id
                     WHERE c.valid = 1
                     AND c.finished = 1
@@ -83,7 +89,6 @@ class MainController extends AbstractController
                     GROUP BY p.name, p.defaultchar
                 ) AS dt,
                 (
-                    # Get total number of championships to run qualification checks
                     SELECT
                         COUNT(id) AS `count`
                     FROM championships
@@ -91,7 +96,6 @@ class MainController extends AbstractController
                     AND finished = 1
                 ) AS `total_champs`,
                 (
-                    # Get the total number of participated players for qualification checks
                     SELECT
                         COUNT(DISTINCT(p.id)) AS `count`
                     FROM players AS p

@@ -70,7 +70,9 @@
 <div class="text-center">
     <p>
         A minimum of <b>{{ standings|first.qualification_limit|number_format(2) }}</b> played championships are required in order to qualify.<br>
-        <small>This is calculated via: <b>(# championships / # players) - 10%</b>. This is to account for busy periods / sickness.</small>
+        <small>
+            # championships <b>({{ standings|first.total_champs }})</b> &divide; # players <b>({{ standings|first.total_players }})</b> = <b>{{ standings|first.qualification_limit|number_format(2) }}</b> championships
+        </small>
     </p>
 </div>
 {% else %}
